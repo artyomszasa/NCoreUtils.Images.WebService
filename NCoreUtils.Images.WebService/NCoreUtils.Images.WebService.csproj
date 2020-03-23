@@ -16,6 +16,7 @@
   </PropertyGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="System.Threading.Tasks" />
+    <TrimmerRootAssembly Include="System.Web.HttpUtility" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.csproj" />
@@ -24,4 +25,16 @@
     <PackageReference Include="NCoreUtils.Images.GoogleCloudStorage" Version="3.1.0-alpha0" />
     <PackageReference Include="NCoreUtils.Images.ImageMagick" Version="3.1.0-alpha0" />
   </ItemGroup>
+  <Target Name="DockerBuild">
+    <!-- Ensure properties -->
+    <PropertyGroup>
+      <DockerFile Condition=" '$(DockerFile)' == '' ">Dockerfile</DockerFile>
+      <DockerImageName Condition=" '$(DockerImageName)' ==  '' ">$(AssemblyName.ToLowerInvariant().Replace('.', '-'))</DockerImageName>
+      <DockerImageVersion Condition=" '$(DockerImageVersion)' == '' ">$(Version)</DockerImageVersion>
+      <DockerFilePath>$([MSBuild]::GetPathOfFileAbove($(DockerFile)))</DockerFilePath>
+      <DockerRootPath>$([System.IO.Path]::GetDirectoryName($(DockerFilePath)))</DockerRootPath>
+    </PropertyGroup>
+    <!-- Execute docker -->
+    <Exec Command="docker build -t $(DockerImageName):$(DockerImageVersion) -f $(DockerFilePath) $(DockerRootPath)" />
+  </Target>
 </Project>
