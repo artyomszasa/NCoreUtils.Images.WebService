@@ -66,7 +66,8 @@ namespace NCoreUtils.Images
                 quality: I("q"),
                 optimize: B("x"),
                 weightX: I("cx"),
-                weightY: I("cy")
+                weightY: I("cy"),
+                filters: FilterParser.Parse(S("f"))
             );
 
             bool? B(string name)

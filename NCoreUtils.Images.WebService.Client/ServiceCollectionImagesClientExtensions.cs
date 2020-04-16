@@ -63,8 +63,8 @@ namespace NCoreUtils.Images
                 throw new InvalidOperationException("Image analyzer client endpoint must not be empty");
             }
             return services
-                .AddSingleton(configuration.AsTyped<ImageResizerClient>())
-                .AddSingleton<IImageResizer, ImageResizerClient>();
+                .AddSingleton(configuration.AsTyped<ImageAnalyzerClient>())
+                .AddSingleton<IImageAnalyzer, ImageAnalyzerClient>();
         }
 
         public static IServiceCollection AddImageAnalyzerClient(

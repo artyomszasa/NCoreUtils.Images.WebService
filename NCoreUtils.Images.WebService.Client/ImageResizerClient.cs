@@ -25,8 +25,8 @@ namespace NCoreUtils.Images
                 .AppendQ(ref first, "x", options.Optimize)
                 .AppendQ(ref first, "cx", options.WeightX)
                 .AppendQ(ref first, "cy", options.WeightY)
+                .AppendQ(ref first, "f", options.Filters)
                 .ToString();
-
         }
 
         public ImageResizerClient(

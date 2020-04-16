@@ -11,6 +11,12 @@ namespace NCoreUtils.Images
 {
     public partial class ImageAnalyzerClient : ImagesClient, IImageAnalyzer
     {
+        static readonly JsonSerializerOptions _imageInfoOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new ImageInfoConverter() }
+        };
+
         public ImageAnalyzerClient(
             ImagesClientConfiguration<ImageAnalyzerClient> configuration,
             ILogger<ImagesClient> logger,
@@ -66,7 +72,7 @@ namespace NCoreUtils.Images
             Logger.LogDebug("Computed context for analyze operation ({0}).", context.ContentType);
             try
             {
-                var consumer = StreamConsumer.Create((input, cancellationToken) => JsonSerializer.DeserializeAsync<ImageInfo>(input, cancellationToken: cancellationToken))
+                var consumer = StreamConsumer.Create((input, cancellationToken) => JsonSerializer.DeserializeAsync<ImageInfo>(input, _imageInfoOptions, cancellationToken))
                     .Chain(StreamTransformation.Create(async (input, output, cancellationToken) =>
                     {
                         Logger.LogDebug("Sending analyze request.");
