@@ -7,16 +7,16 @@ RUN mkdir -p /tmp/prefetch && \
     dotnet add package Google.Apis --version 1.44.1 --no-restore && \
     dotnet add package Google.Apis.Auth --version 1.44.1 --no-restore && \
     dotnet add package Google.Apis.Core --version 1.44.1 --no-restore && \
-    dotnet add package Magick.NET-Q16-x64 --version 7.15.4 --no-restore && \
+    dotnet add package Magick.NET-Q16-x64 --version 7.16.0 --no-restore && \
     dotnet add package Microsoft.NETCore.Platforms --version 3.1.0 --no-restore && \
     dotnet add package Microsoft.NETCore.Targets --version 3.1.0 --no-restore && \
     dotnet add package NETStandard.Library --version 2.0.3 --no-restore && \
     dotnet add package Newtonsoft.Json --version 12.0.3 --no-restore && \
-    dotnet add package System.Buffers --version 4.5.0 --no-restore && \
+    dotnet add package System.Buffers --version 4.5.1 --no-restore && \
     dotnet add package System.IO.Pipelines --version 4.7.0 --no-restore && \
-    dotnet add package System.Memory --version 4.5.3 --no-restore && \
+    dotnet add package System.Memory --version 4.5.4 --no-restore && \
     dotnet add package System.Numerics.Vectors --version 4.5.0 --no-restore && \
-    dotnet add package System.Runtime.CompilerServices.Unsafe --version 4.7.0 --no-restore && \
+    dotnet add package System.Runtime.CompilerServices.Unsafe --version 4.7.1 --no-restore && \
     dotnet add package System.Text.Json --version 4.7.1 --no-restore && \
     dotnet add package System.ValueTuple --version 4.5.0 --no-restore && \
     dotnet restore -r linux-x64 -v n && \

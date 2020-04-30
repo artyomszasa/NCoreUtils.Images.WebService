@@ -1,21 +1,21 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NCoreUtils.AspNetCore;
 
 namespace NCoreUtils.Images.WebService
 {
     public class Startup
     {
-        void ConfigureLogging(ILoggingBuilder builder)
+        void ConfigureLogging(ILoggingBuilder builder, IConfiguration configuration, string? projectId = default)
             => builder
                 .ClearProviders()
-                .SetMinimumLevel(LogLevel.Information)
-                .AddConsole();
+                .AddConfiguration(configuration)
+                .AddGoogleFluentdSink(projectId: projectId, categoryHandling: CategoryHandling.IncludeAsLabel, eventIdHandling: EventIdHandling.Ignore);
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -33,7 +33,7 @@ namespace NCoreUtils.Images.WebService
                 ?? new ServiceConfiguration();
 
             services
-                .AddLogging(ConfigureLogging)
+                .AddLogging(b => ConfigureLogging(b, configuration.GetSection("Logging"), configuration["Google:ProjectId"]))
                 .AddSingleton(imageResizerOptions)
                 .AddSingleton(serviceConfiguration)
                 .AddHttpContextAccessor()
@@ -52,6 +52,7 @@ namespace NCoreUtils.Images.WebService
             #endif
 
             app
+                .UsePrePopulateLoggingContext()
                 .UseMiddleware<ErrorMiddleware>()
                 .UseMiddleware<ImagesMiddleware>()
                 .Run((context) =>
