@@ -43,7 +43,14 @@ namespace NCoreUtils.Images.WebService
                 .AddHttpContextAccessor()
                 .AddHttpClient()
                 .AddImageMagickResizer()
-                .AddResourceFactories(b => b.Add<DefaultResourceFactory>().Add<GoogleCloudStorageResourceFactory>());
+                .AddResourceFactories(b => b
+                    // inline data
+                    .Add<DefaultResourceFactory>()
+                    // GCS
+                    .Add<GoogleCloudStorageResourceFactory>()
+                    // locally mounted fs
+                    .Add<FileSystemResourceFactory>()
+                );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
