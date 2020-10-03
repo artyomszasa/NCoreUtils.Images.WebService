@@ -1,23 +1,26 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.200-buster AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.402-buster AS build-env
 # PREFETCH
 WORKDIR /
 RUN mkdir -p /tmp/prefetch && \
     cd /tmp/prefetch && \
     dotnet new web && \
-    dotnet add package Google.Apis --version 1.44.1 --no-restore && \
-    dotnet add package Google.Apis.Auth --version 1.44.1 --no-restore && \
-    dotnet add package Google.Apis.Core --version 1.44.1 --no-restore && \
-    dotnet add package Magick.NET-Q16-x64 --version 7.16.0 --no-restore && \
-    dotnet add package Microsoft.NETCore.Platforms --version 3.1.0 --no-restore && \
+    dotnet add package Google.Apis --version 1.49.0 --no-restore && \
+    dotnet add package Google.Apis.Auth --version 1.49.0 --no-restore && \
+    dotnet add package Google.Apis.Core --version 1.49.0 --no-restore && \
+    dotnet add package Magick.NET-Q16-x64 --version 7.22.0 --no-restore && \
+    dotnet add package Microsoft.NETCore.Platforms --version 3.1.2 --no-restore && \
     dotnet add package Microsoft.NETCore.Targets --version 3.1.0 --no-restore && \
     dotnet add package NETStandard.Library --version 2.0.3 --no-restore && \
     dotnet add package Newtonsoft.Json --version 12.0.3 --no-restore && \
     dotnet add package System.Buffers --version 4.5.1 --no-restore && \
-    dotnet add package System.IO.Pipelines --version 4.7.0 --no-restore && \
+    dotnet add package System.IO.Pipelines --version 4.7.2 --no-restore && \
     dotnet add package System.Memory --version 4.5.4 --no-restore && \
+    dotnet add package System.Net.Http --version 4.3.4 --no-restore && \
     dotnet add package System.Numerics.Vectors --version 4.5.0 --no-restore && \
+    dotnet add package System.Runtime --version 4.3.1 --no-restore && \
+    dotnet add package System.Runtime.Extensions --version 4.3.1 --no-restore && \
     dotnet add package System.Runtime.CompilerServices.Unsafe --version 4.7.1 --no-restore && \
-    dotnet add package System.Text.Json --version 4.7.1 --no-restore && \
+    dotnet add package System.Text.Json --version 4.7.2 --no-restore && \
     dotnet add package System.ValueTuple --version 4.5.0 --no-restore && \
     dotnet restore -r linux-x64 -v n && \
     cd / && \
@@ -33,7 +36,7 @@ COPY ./NCoreUtils.Images.WebService.Shared/*.cs ./NCoreUtils.Images.WebService.S
 COPY ./NCoreUtils.Images.WebService/*.cs ./NCoreUtils.Images.WebService/
 RUN dotnet publish ./NCoreUtils.Images.WebService/*.csproj -r linux-x64 -c Release -o /app/out
 
-FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1.2-buster-slim
+FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1.8-buster-slim
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV LISTEN=0.0.0.0:80
