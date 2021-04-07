@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NCoreUtils.AspNetCore;
+// using NCoreUtils.AspNetCore;
 
 namespace NCoreUtils.Images.WebService
 {
@@ -16,7 +16,8 @@ namespace NCoreUtils.Images.WebService
             => builder
                 .ClearProviders()
                 .AddConfiguration(configuration)
-                .AddGoogleFluentdSink(projectId: projectId, categoryHandling: CategoryHandling.IncludeAsLabel, eventIdHandling: EventIdHandling.Ignore);
+                .AddConsole();
+                // .AddGoogleFluentdSink(projectId: projectId, categoryHandling: CategoryHandling.IncludeAsLabel, eventIdHandling: EventIdHandling.Ignore);
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -48,6 +49,8 @@ namespace NCoreUtils.Images.WebService
                     .Add<DefaultResourceFactory>()
                     // GCS
                     .Add<GoogleCloudStorageResourceFactory>()
+                    // Azure Bloc Storage
+                    .Add<AzureBlocStorageResourceFactory>()
                     // locally mounted fs
                     .Add<FileSystemResourceFactory>()
                 );
@@ -63,7 +66,7 @@ namespace NCoreUtils.Images.WebService
             #endif
 
             app
-                .UsePrePopulateLoggingContext()
+                // .UsePrePopulateLoggingContext()
                 .UseMiddleware<ErrorMiddleware>()
                 .UseMiddleware<ImagesMiddleware>()
                 .Run((context) =>

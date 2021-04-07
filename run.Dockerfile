@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.402-buster AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:3.1.407-buster AS build-env
 # PREFETCH
 WORKDIR /
 RUN mkdir -p /tmp/prefetch && \
@@ -36,7 +36,7 @@ COPY ./NCoreUtils.Images.WebService.Shared/*.cs ./NCoreUtils.Images.WebService.S
 COPY ./NCoreUtils.Images.WebService/*.cs ./NCoreUtils.Images.WebService/
 RUN dotnet publish ./NCoreUtils.Images.WebService/*.csproj -r linux-x64 -c Release -o /app/out
 
-FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1.8-buster-slim
+FROM mcr.microsoft.com/dotnet/runtime-deps:3.1.13-buster-slim
 WORKDIR /app
 ENV DOTNET_ENVIRONMENT=Production \
     ASPNETCORE_ENVIRONMENT=Production \
