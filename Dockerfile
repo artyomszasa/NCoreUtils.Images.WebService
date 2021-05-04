@@ -36,9 +36,10 @@ COPY ./NCoreUtils.Images.WebService.Shared/*.cs ./NCoreUtils.Images.WebService.S
 COPY ./NCoreUtils.Images.WebService/*.cs ./NCoreUtils.Images.WebService/
 RUN dotnet publish ./NCoreUtils.Images.WebService/*.csproj -r linux-x64 -c Release -o /app/out
 
-FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1.13-buster-slim
+FROM mcr.microsoft.com/dotnet/runtime-deps:3.1.13-buster-slim
 WORKDIR /app
-ENV ASPNETCORE_ENVIRONMENT=Production
-ENV LISTEN=0.0.0.0:80
+ENV DOTNET_ENVIRONMENT=Production \
+    ASPNETCORE_ENVIRONMENT=Production \
+    LISTEN=0.0.0.0:80
 COPY --from=build-env /app/out ./
 ENTRYPOINT ["./NCoreUtils.Images.WebService"]
