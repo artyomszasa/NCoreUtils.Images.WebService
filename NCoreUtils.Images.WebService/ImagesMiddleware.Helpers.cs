@@ -32,21 +32,21 @@ namespace NCoreUtils.Images
         static bool Eqi(string a, string b)
             => StringComparer.OrdinalIgnoreCase.Equals(a, b);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-        static (int, int) GetSegment(in ReadOnlySpan<char> source)
-        {
-            var startIndex = 0;
-            while (startIndex < source.Length && '/' == source[startIndex])
-            {
-                ++startIndex;
-            }
-            var endIndex = source.Length - 1;
-            while (endIndex > 0 && '/' == source[endIndex])
-            {
-                --endIndex;
-            }
-            return (startIndex, endIndex - startIndex + 1); // source.Slice(startIndex, endIndex - startIndex + 1);
-        }
+        // [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        // static (int, int) GetSegment(in ReadOnlySpan<char> source)
+        // {
+        //     var startIndex = 0;
+        //     while (startIndex < source.Length && '/' == source[startIndex])
+        //     {
+        //         ++startIndex;
+        //     }
+        //     var endIndex = source.Length - 1;
+        //     while (endIndex > 0 && '/' == source[endIndex])
+        //     {
+        //         --endIndex;
+        //     }
+        //     return (startIndex, endIndex - startIndex + 1); // source.Slice(startIndex, endIndex - startIndex + 1);
+        // }
 
         static T NotSupportedUri<T>(Uri? uri)
             => throw new ImageException("unsupported_uri", $"Either invalid or unsupported uri: {uri}.");
