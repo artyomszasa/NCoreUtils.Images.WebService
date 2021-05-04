@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCoreUtils.Images.WebServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCoreUtils.Images.WebService", "NCoreUtils.Images.WebService\NCoreUtils.Images.WebService.csproj", "{6C7663BC-26FD-4C36-90EC-72FFAB22BBA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCoreUtils.Images.Function", "NCoreUtils.Images.Function\NCoreUtils.Images.Function.csproj", "{D341CC4F-FC73-464F-8785-5B31C9FD54BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{6C7663BC-26FD-4C36-90EC-72FFAB22BBA2}.Release|x64.Build.0 = Release|Any CPU
 		{6C7663BC-26FD-4C36-90EC-72FFAB22BBA2}.Release|x86.ActiveCfg = Release|Any CPU
 		{6C7663BC-26FD-4C36-90EC-72FFAB22BBA2}.Release|x86.Build.0 = Release|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Debug|x64.Build.0 = Debug|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Debug|x86.Build.0 = Debug|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Release|x64.ActiveCfg = Release|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Release|x64.Build.0 = Release|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Release|x86.ActiveCfg = Release|Any CPU
+		{D341CC4F-FC73-464F-8785-5B31C9FD54BC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
