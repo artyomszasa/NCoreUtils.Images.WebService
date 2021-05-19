@@ -37,6 +37,7 @@ COPY ./NCoreUtils.Images.WebService/*.cs ./NCoreUtils.Images.WebService/
 RUN dotnet publish ./NCoreUtils.Images.WebService/*.csproj -r linux-x64 -c Release -o /app/out
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:3.1.13-buster-slim
+RUN apt update && apt install -y ghostscript && apt clean
 WORKDIR /app
 ENV DOTNET_ENVIRONMENT=Production \
     ASPNETCORE_ENVIRONMENT=Production \
