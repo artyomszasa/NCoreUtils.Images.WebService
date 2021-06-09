@@ -35,15 +35,23 @@ namespace NCoreUtils.Images.WebService
                 ?? new ServiceConfiguration();
 
             services
+                // JSON Serialization
                 .AddOptions<JsonSerializerOptions>()
                     .Configure(opts => opts.PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
                     .Services
+                // Logging
                 .AddLogging(b => ConfigureLogging(b, configuration.GetSection("Logging"), configuration["Google:ProjectId"]))
+                // image resizer options
                 .AddSingleton(imageResizerOptions)
+                // service options
                 .AddSingleton(serviceConfiguration)
+                // HTTP context accessor
                 .AddHttpContextAccessor()
+                // HTTP client factory
                 .AddHttpClient()
+                // ImageMagick
                 .AddImageMagickResizer()
+                // source/destination handlers
                 .AddResourceFactories(b => b
                     // inline data
                     .Add<DefaultResourceFactory>()

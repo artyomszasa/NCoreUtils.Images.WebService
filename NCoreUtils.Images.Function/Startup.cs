@@ -58,15 +58,22 @@ namespace NCoreUtils.Images
                 ?? new ServiceConfiguration();
 
             services
+                // JSON serialization
                 .AddOptions<JsonSerializerOptions>()
                     .Configure(opts => opts.PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
                     .Services
+                // Logging
                 .AddSingleton<ILoggerProvider>(new LoggerProvider(logger))
                 .AddTransient(typeof(ILogger<>), typeof(Logger<>))
+                // image resizer options
                 .AddSingleton(imageResizerOptions)
+                // service options
                 .AddSingleton(serviceConfiguration)
+                // HTTP client factory
                 .AddHttpClient()
+                // ImageMagick
                 .AddImageMagickResizer()
+                // source/destination handlers
                 .AddResourceFactories(b => b
                     // inline data
                     .Add<DefaultResourceFactory>()
