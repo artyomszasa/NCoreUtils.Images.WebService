@@ -4,7 +4,7 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>NCoreUtils.Images.WebService</RootNamespace>
-    <Version>3.1.0-beta03</Version>
+    <Version>3.1.0-beta04</Version>
     <!-- NuGet -->
     <PackageId>NCoreUtils.Images.WebService.Shared</PackageId>
     <Title>$(PackageId)</Title>
