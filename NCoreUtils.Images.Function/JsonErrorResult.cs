@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NCoreUtils.Images.WebService;
 
@@ -27,6 +28,7 @@ namespace NCoreUtils.Images
             var response = context.HttpContext.Response;
             ImageErrorData data = _exception is ImageException e ? GetErrorData(e) : new ImageErrorData(ErrorCodes.GenericError, _exception.Message);
             response.StatusCode = 400;
+            response.Headers.Append("Cache-Control", "no-store, no-cache");
             response.ContentType = "application/json; charset=utf-8";
             await JsonSerializer.SerializeAsync(response.Body, data, ErrorSerialization.Options, context.HttpContext.RequestAborted).ConfigureAwait(false);
             await response.Body.FlushAsync(context.HttpContext.RequestAborted).ConfigureAwait(false);

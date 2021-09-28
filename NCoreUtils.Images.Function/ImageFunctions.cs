@@ -95,11 +95,15 @@ namespace NCoreUtils.Images
             return (source, destination);
         }
 
-        private static async Task InvokeResize(HttpRequest request, IResourceFactory resourceFactory, IImageResizer resizer, CancellationToken cancellationToken)
+        private static async Task InvokeResize(ILogger logger, HttpRequest request, IResourceFactory resourceFactory, IImageResizer resizer, CancellationToken cancellationToken)
         {
             var sourceAndDestination = await ParseSourceAndDestination(request, cancellationToken).ConfigureAwait(false);
+            logger.LogInformation("Input: {0}.", sourceAndDestination);
             var (source, destination) = ResolveSourceAndDestination(resourceFactory, sourceAndDestination);
-            await resizer.ResizeAsync(source, destination, ReadResizeOptions(request.Query), cancellationToken).ConfigureAwait(false);
+            logger.LogInformation("Successfully resolved source and destination.");
+            var options = ReadResizeOptions(request.Query);
+            logger.LogInformation("Options: {0}.", options);
+            await resizer.ResizeAsync(source, destination, options, cancellationToken).ConfigureAwait(false);
         }
 
         private static async Task<IActionResult> InvokeAnalyze(HttpRequest request, IResourceFactory resourceFactory, IImageAnalyzer analyzer, CancellationToken cancellationToken)
@@ -128,7 +132,7 @@ namespace NCoreUtils.Images
                 {
                     var resourceFactory = scope.ServiceProvider.GetRequiredService<IResourceFactory>();
                     var resizer = scope.ServiceProvider.GetRequiredService<IImageResizer>();
-                    await InvokeResize(request, resourceFactory, resizer, cancellationSource.Token);
+                    await InvokeResize(log, request, resourceFactory, resizer, cancellationSource.Token);
                 }
                 catch (Exception exn)
                 {
@@ -136,7 +140,7 @@ namespace NCoreUtils.Images
                     return new JsonErrorResult(exn);
                 }
             }
-            return new OkResult();
+            return new OkNoCacheResult();
         }
 
         [FunctionName("Analyze")]

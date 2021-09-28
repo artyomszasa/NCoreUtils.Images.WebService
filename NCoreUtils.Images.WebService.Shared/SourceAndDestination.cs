@@ -45,5 +45,8 @@ namespace NCoreUtils.Images.WebService
 
         public override int GetHashCode()
             => HashCode.Combine(Source, Destination);
+
+        public override string ToString()
+            => $"[{nameof(Source)} = {Source}, {nameof(Destination)} = {Destination}]";
     }
 }

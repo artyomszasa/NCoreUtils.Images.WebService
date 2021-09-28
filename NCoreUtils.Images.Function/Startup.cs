@@ -36,10 +36,11 @@ namespace NCoreUtils.Images
                 => _logger.BeginScope(state);
 
             public bool IsEnabled(LogLevel logLevel)
-                => IsEnabled(logLevel);
+                => _logger.IsEnabled(logLevel);
 
             public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
                 => _logger.Log(logLevel, eventId, state, exception, formatter);
+                // => _logger.Log(logLevel < LogLevel.Information ? LogLevel.Information : logLevel, eventId, state, exception, formatter);
         }
 
         public void ConfigureServices(IServiceCollection services, ILogger logger)
@@ -80,7 +81,7 @@ namespace NCoreUtils.Images
                     // GCS
                     .Add<GoogleCloudStorageResourceFactory>()
                     // Azure Bloc Storage
-                    .Add<AzureBlocStorageResourceFactory>()
+                    .Add<AzureBlobStorageResourceFactory>()
                 );
         }
     }

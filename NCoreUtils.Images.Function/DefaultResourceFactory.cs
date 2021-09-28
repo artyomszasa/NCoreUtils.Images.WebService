@@ -5,11 +5,6 @@ namespace NCoreUtils.Images
 {
     public class DefaultResourceFactory : IResourceFactory
     {
-        readonly IHttpContextAccessor _httpContextAccessor;
-
-        public DefaultResourceFactory(IHttpContextAccessor httpContextAccessor)
-            => _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-
         public IImageDestination CreateDestination(Uri? uri, Func<IImageDestination> next)
         {
             if (uri is null)

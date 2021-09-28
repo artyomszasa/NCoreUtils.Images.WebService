@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace NCoreUtils.Images
 {
     public class CompositeResourceFactory : IResourceFactory
     {
+        private ILogger _logger;
+
         public IReadOnlyList<IResourceFactory> Factories { get; }
 
         public CompositeResourceFactory(IServiceProvider serviceProvider, CompositeResourceFactoryBuilder builder)
@@ -15,6 +18,7 @@ namespace NCoreUtils.Images
             {
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
+            _logger = serviceProvider.GetRequiredService<ILogger<CompositeResourceFactory>>();
             if (builder is null)
             {
                 throw new ArgumentNullException(nameof(builder));
@@ -30,8 +34,10 @@ namespace NCoreUtils.Images
 
             IImageSource DoCreateSource(int index)
             {
+                _logger.LogInformation("Trying source factory #{0}.", index);
                 if (index < Factories.Count)
                 {
+                    _logger.LogInformation("Trying source factory {0}.", Factories[index].ToString());
                     return Factories[index].CreateSource(uri, () => DoCreateSource(index + 1));
                 }
                 return next();
@@ -44,8 +50,10 @@ namespace NCoreUtils.Images
 
             IImageDestination DoCreateDestination(int index)
             {
+                _logger.LogInformation("Trying destination factory #{0}.", index);
                 if (index < Factories.Count)
                 {
+                    _logger.LogInformation("Trying destination factory {0}.", Factories[index].ToString());
                     return Factories[index].CreateDestination(uri, () => DoCreateDestination(index + 1));
                 }
                 return next();
