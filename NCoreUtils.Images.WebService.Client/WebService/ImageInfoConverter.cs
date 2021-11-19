@@ -68,9 +68,9 @@ namespace NCoreUtils.Images.WebService
                         {
                             throw new InvalidOperationException("Expected property.");
                         }
-                        var key = reader.GetString();
+                        var key = reader.GetString() ?? throw new JsonException("Key must not be null.");
                         reader.ReadOrFail();
-                        var value = reader.GetString();
+                        var value = reader.GetString()!;
                         iptc[key] = value;
                         reader.ReadOrFail();
                     }
@@ -90,10 +90,10 @@ namespace NCoreUtils.Images.WebService
                         {
                             throw new InvalidOperationException("Expected property.");
                         }
-                        var key = reader.GetString();
+                        var key = reader.GetString() ?? throw new JsonException("Key must not be null.");
                         reader.ReadOrFail();
                         var value = reader.GetString();
-                        exif[key] = value;
+                        exif[key] = value!;
                         reader.ReadOrFail();
                     }
                     reader.ReadOrFail();

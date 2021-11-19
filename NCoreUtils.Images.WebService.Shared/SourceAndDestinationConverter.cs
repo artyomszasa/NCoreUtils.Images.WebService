@@ -34,7 +34,7 @@ namespace NCoreUtils.Images.WebService
                             source = reader.TokenType switch
                             {
                                 JsonTokenType.Null => default,
-                                JsonTokenType.String => new Uri(reader.GetString(), UriKind.Absolute),
+                                JsonTokenType.String => new Uri(reader.GetString() ?? string.Empty, UriKind.Absolute),
                                 JsonTokenType token => throw new InvalidOperationException($"Expected source Uri or null, got {token}.")
                             };
                             reader.ReadOrFail();
@@ -45,7 +45,7 @@ namespace NCoreUtils.Images.WebService
                             destination = reader.TokenType switch
                             {
                                 JsonTokenType.Null => default,
-                                JsonTokenType.String => new Uri(reader.GetString(), UriKind.Absolute),
+                                JsonTokenType.String => new Uri(reader.GetString() ?? string.Empty, UriKind.Absolute),
                                 JsonTokenType token => throw new InvalidOperationException($"Expected destination Uri or null, got {token}.")
                             };
                             reader.ReadOrFail();

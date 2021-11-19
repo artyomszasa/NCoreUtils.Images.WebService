@@ -12,7 +12,7 @@ namespace NCoreUtils.Images.WebService
 
         protected RemoteInvalidImageException(SerializationInfo info, StreamingContext context)
             : base(info, context)
-            => EndPoint = info.GetString(nameof(EndPoint));
+            => EndPoint = info.GetString(nameof(EndPoint)) ?? string.Empty;
 
         public RemoteInvalidImageException(string endpoint, string description)
             : base(description)

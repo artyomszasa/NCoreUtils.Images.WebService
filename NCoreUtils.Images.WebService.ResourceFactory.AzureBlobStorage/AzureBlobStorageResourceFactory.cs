@@ -2,7 +2,7 @@ using System;
 
 namespace NCoreUtils.Images.WebService
 {
-    public class AzureBlocStorageResourceFactory : IResourceFactory
+    public class AzureBlobStorageResourceFactory : IResourceFactory
     {
         public IImageDestination CreateDestination(Uri? uri, Func<IImageDestination> next)
         {

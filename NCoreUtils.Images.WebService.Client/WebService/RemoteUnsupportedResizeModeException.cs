@@ -12,7 +12,7 @@ namespace NCoreUtils.Images.WebService
 
         protected RemoteUnsupportedResizeModeException(SerializationInfo info, StreamingContext context)
             : base(info, context)
-            => EndPoint = info.GetString(nameof(EndPoint));
+            => EndPoint = info.GetString(nameof(EndPoint)) ?? string.Empty;
 
         public RemoteUnsupportedResizeModeException(string endpoint, string resizeMode, int? width, int? height, string description)
             : base(resizeMode, width, height, description)

@@ -14,7 +14,8 @@ namespace NCoreUtils.Images
         {
             if (uri is null)
             {
-                return new HttpResponseDestination(_httpContextAccessor.HttpContext.Response);
+                var context = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Unable to access current HTTP context.");
+                return new HttpResponseDestination(context.Response);
             }
             return next();
         }
@@ -23,7 +24,8 @@ namespace NCoreUtils.Images
         {
             if (uri is null)
             {
-                return new HttpRequestSource(_httpContextAccessor.HttpContext.Request);
+                var context = _httpContextAccessor.HttpContext ?? throw new InvalidOperationException("Unable to access current HTTP context.");
+                return new HttpRequestSource(context.Request);
             }
             return next();
         }

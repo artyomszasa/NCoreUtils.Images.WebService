@@ -27,7 +27,7 @@ namespace NCoreUtils.Images.WebService
             if (reader.ValueTextEquals(_keyDescription))
             {
                 reader.ReadOrFail();
-                Description = reader.GetString();
+                Description = reader.GetString() ?? string.Empty;
                 reader.ReadOrFail();
             }
             else if (reader.ValueTextEquals(_keyResizeMode))

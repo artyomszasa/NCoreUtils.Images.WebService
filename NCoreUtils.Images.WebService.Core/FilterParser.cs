@@ -13,7 +13,7 @@ namespace NCoreUtils.Images
         private static readonly Regex _regexBlur = new Regex("^blur\\(([0-9]+(\\.[0-9]+)?)\\)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private static readonly Regex _regexWaterMark = new Regex("^watermark\\((.*?),(\\d+),(\\d+),(\\d+)\\)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        public static IReadOnlyList<IFilter> Parse(string? input)
+        public static IReadOnlyList<IFilter> Parse(IResourceFactory resourceFactory, string? input)
         {
             if (string.IsNullOrEmpty(input))
             {
@@ -32,7 +32,7 @@ namespace NCoreUtils.Images
                 else if (m2.Success)
                 {
                     var uri = new Uri(m2.Groups[1].Value);
-                    var source = new AzureBlobStorageSource(uri);
+                    var source = resourceFactory.CreateSource(uri, () => CoreFunctions.NotSupportedUri<IImageSource>(uri));
                     var x = int.Parse(m2.Groups[3].Value, NumberStyles.Number, CultureInfo.InvariantCulture);
                     var y = int.Parse(m2.Groups[4].Value, NumberStyles.Number, CultureInfo.InvariantCulture);
                     var gravity = (WaterMarkGravity)int.Parse(m2.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture);

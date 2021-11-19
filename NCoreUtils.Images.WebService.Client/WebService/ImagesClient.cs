@@ -23,7 +23,7 @@ namespace NCoreUtils.Images.WebService
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static string GetUriFromResponse(HttpResponseMessage response)
-            => response.RequestMessage.RequestUri.AbsoluteUri;
+            => response.RequestMessage?.RequestUri?.AbsoluteUri ?? string.Empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static bool IsJsonCompatible(MediaTypeHeaderValue contentType)
@@ -171,7 +171,7 @@ namespace NCoreUtils.Images.WebService
             {
                 using var client = CreateHttpClient();
                 using var stream = await client.GetStreamAsync(uri).ConfigureAwait(false);
-                var capabilities = new HashSet<string>(await JsonSerializer.DeserializeAsync<string[]>(stream).ConfigureAwait(false));
+                var capabilities = new HashSet<string>(await JsonSerializer.DeserializeAsync<string[]>(stream).ConfigureAwait(false) ?? Array.Empty<string>());
                 Logger.LogDebug("Remote server supports following extensions: {0}.", string.Join(", ", capabilities));
                 _cachedCapabilities = capabilities;
                 return capabilities;

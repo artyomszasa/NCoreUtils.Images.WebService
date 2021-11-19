@@ -29,7 +29,7 @@ namespace NCoreUtils.Images.WebService
                     if (reader.TokenType == JsonTokenType.PropertyName && reader.ValueTextEquals(_keyErrorCode))
                     {
                         reader.ReadOrFail();
-                        var errorCode = reader.GetString();
+                        var errorCode = reader.GetString() ?? string.Empty;
                         var deserializer = _deserializers.TryGetValue(errorCode, out var factory)
                             ? factory(errorCode)
                             : new GenericErrorDeserializer(errorCode);

@@ -12,7 +12,7 @@ namespace NCoreUtils.Images.WebService
 
         protected RemoteUnsupportedImageTypeException(SerializationInfo info, StreamingContext context)
             : base(info, context)
-            => EndPoint = info.GetString(nameof(EndPoint));
+            => EndPoint = info.GetString(nameof(EndPoint)) ?? string.Empty;
 
         public RemoteUnsupportedImageTypeException(string endpoint, string imageType, string description)
             : base(imageType, description)

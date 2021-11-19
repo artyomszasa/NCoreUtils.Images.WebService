@@ -13,11 +13,7 @@ namespace NCoreUtils.Images.WebService
                 // inline data
                 .Add<DefaultResourceFactory>()
                 // GCS
-                .Add<GoogleCloudStorageResourceFactory>()
-                // Azure Bloc Storage
-                .Add<AzureBlobStorageResourceFactory>()
-                // locally mounted fs
-                .Add<FileSystemResourceFactory>();
+                .Add<GoogleCloudStorageResourceFactory>();
         }
     }
 }

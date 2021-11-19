@@ -1,10 +1,12 @@
 using System;
 using System.Globalization;
 using System.Net;
+using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NCoreUtils.Logging;
 
 namespace NCoreUtils.Images.WebService
 {
@@ -31,6 +33,7 @@ namespace NCoreUtils.Images.WebService
             => new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                 .AddJsonFile("secrets/appsettings.json", optional: true, reloadOnChange: false)
+                .AddEnvironmentVariables("IMAGES_")
                 .Build();
 
         public static void Main(string[] args)
@@ -49,7 +52,10 @@ namespace NCoreUtils.Images.WebService
                     builder
                         .ClearProviders()
                         .AddConfiguration(configuration)
-                        .AddConsole();
+                        .AddGoogleFluentd<AspNetCoreLoggerProvider>(projectId: configuration["Google:ProjectId"], configureOptions: o =>
+                        {
+                            o.Configuration.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                        });
                 })
                 .ConfigureWebHost(webBuilder =>
                 {

@@ -95,7 +95,7 @@ namespace NCoreUtils.Images
             return ResizeOperationContext.Inline(source.CreateProducer(), destination);
         }
 
-        protected virtual async Task InvokeResizeAsync(
+        protected virtual async ValueTask InvokeResizeAsync(
             IImageSource source,
             IImageDestination destination,
             string queryString,
@@ -139,7 +139,7 @@ namespace NCoreUtils.Images
                         using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                         Logger.LogDebug("Received response of the resize request.");
                         await CheckAsync(response, cancellationToken).ConfigureAwait(false);
-                        outputMime = response.Content.Headers.ContentType.MediaType ?? "application/octet-stream";
+                        outputMime = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
                         using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                         await stream.CopyToAsync(output, 16 * 1024, cancellationToken).ConfigureAwait(false);
                         Logger.LogDebug("Done processing response of the resize request.");
@@ -165,7 +165,7 @@ namespace NCoreUtils.Images
             }
         }
 
-        public virtual Task ResizeAsync(IImageSource source, IImageDestination destination, ResizeOptions options, CancellationToken cancellationToken = default)
+        public virtual ValueTask ResizeAsync(IImageSource source, IImageDestination destination, ResizeOptions options, CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(options);
             return InvokeResizeAsync(source, destination, queryString, Configuration.EndPoint, cancellationToken);

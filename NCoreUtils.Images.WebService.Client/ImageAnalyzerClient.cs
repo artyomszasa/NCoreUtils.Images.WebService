@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -59,7 +60,7 @@ namespace NCoreUtils.Images
             return AnalyzeOperationContext.Inline(source.CreateProducer());
         }
 
-        protected virtual async Task<ImageInfo> InvokeGetImageInfoAsync(
+        protected virtual async ValueTask<ImageInfo> InvokeGetImageInfoAsync(
             IImageSource source,
             string endpoint,
             CancellationToken cancellationToken)
@@ -88,7 +89,7 @@ namespace NCoreUtils.Images
                 Logger.LogDebug("Initializing analyze operation.");
                 var result = await context.Producer.ConsumeAsync(consumer, cancellationToken).ConfigureAwait(false);
                 Logger.LogDebug("Analyze operation completed.");
-                return result;
+                return result ?? new ImageInfo(default, default, default, default, new Dictionary<string, string>(), new Dictionary<string, string>());
             }
             catch (Exception exn) when (!(exn is ImageException))
             {
@@ -105,7 +106,7 @@ namespace NCoreUtils.Images
             }
         }
 
-        public virtual Task<ImageInfo> AnalyzeAsync(IImageSource source, CancellationToken cancellationToken = default)
+        public virtual ValueTask<ImageInfo> AnalyzeAsync(IImageSource source, CancellationToken cancellationToken = default)
             => InvokeGetImageInfoAsync(source, Configuration.EndPoint, cancellationToken);
     }
 }

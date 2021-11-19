@@ -12,7 +12,7 @@ namespace NCoreUtils.Images.WebService
 
         protected RemoteImageException(SerializationInfo info, StreamingContext context)
             : base(info, context)
-            => EndPoint = info.GetString(nameof(EndPoint));
+            => EndPoint = info.GetString(nameof(EndPoint)) ?? string.Empty;
 
         public RemoteImageException(string endpoint, string errorCode, string description)
             : base(errorCode, description)
