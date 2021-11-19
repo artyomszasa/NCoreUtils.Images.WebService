@@ -3,10 +3,13 @@
     "functionTimeout": "00:30:00",
     "logging": {
         "applicationInsights": {
-            "samplingExcludedTypes": "Request",
             "samplingSettings": {
-                "isEnabled": true
+                "isEnabled": true,
+                "excludedTypes": "Request"
             }
+        },
+        "logLevel": {
+            "MagickNET": "Information"
         }
     }
 }

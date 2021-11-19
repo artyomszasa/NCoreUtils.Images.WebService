@@ -12,9 +12,9 @@ namespace NCoreUtils.Images
     {
         protected IConfiguration Configuration { get; }
 
-        protected IWebHostEnvironment Env { get; }
+        protected IWebHostEnvironment? Env { get; }
 
-        protected CoreStartup(IConfiguration configuration, IWebHostEnvironment env)
+        protected CoreStartup(IConfiguration configuration, IWebHostEnvironment? env)
         {
             Configuration = configuration;
             Env = env;
@@ -61,7 +61,7 @@ namespace NCoreUtils.Images
         public virtual void Configure(IApplicationBuilder app)
         {
             #if DEBUG
-            if (Env.IsDevelopment())
+            if (Env is not null && Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

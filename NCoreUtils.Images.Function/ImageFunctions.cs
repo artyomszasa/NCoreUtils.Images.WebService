@@ -15,7 +15,7 @@ using System.Globalization;
 
 namespace NCoreUtils.Images
 {
-    public static class ImageFunctions
+    public class ImageFunctions
     {
         private static string[] _capabilities = new [] { Capabilities.JsonSerializedImageInfo };
 
@@ -36,12 +36,13 @@ namespace NCoreUtils.Images
         private static T NotSupportedUri<T>(Uri? uri)
             => throw new ImageException("unsupported_uri", $"Either invalid or unsupported uri: {uri}.");
 
-        private static bool IsJsonCompatible(string contentType)
-            => contentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)
-                || contentType.StartsWith("text/json", StringComparison.OrdinalIgnoreCase)
-                || contentType.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase);
+        private static bool IsJsonCompatible(string? contentType)
+            => contentType is not null
+                && (contentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)
+                    || contentType.StartsWith("text/json", StringComparison.OrdinalIgnoreCase)
+                    || contentType.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase));
 
-        private static ResizeOptions ReadResizeOptions(IQueryCollection query)
+        private static ResizeOptions ReadResizeOptions(IResourceFactory resourceFactory, IQueryCollection query)
         {
             return new ResizeOptions(
                 imageType: S("t"),
@@ -52,7 +53,7 @@ namespace NCoreUtils.Images
                 optimize: B("x"),
                 weightX: I("cx"),
                 weightY: I("cy"),
-                filters: FilterParser.Parse(S("f"))
+                filters: FilterParser.Parse(resourceFactory, S("f"))
             );
 
             bool? B(string name)
@@ -101,7 +102,7 @@ namespace NCoreUtils.Images
             logger.LogInformation("Input: {0}.", sourceAndDestination);
             var (source, destination) = ResolveSourceAndDestination(resourceFactory, sourceAndDestination);
             logger.LogInformation("Successfully resolved source and destination.");
-            var options = ReadResizeOptions(request.Query);
+            var options = ReadResizeOptions(resourceFactory, request.Query);
             logger.LogInformation("Options: {0}.", options);
             await resizer.ResizeAsync(source, destination, options, cancellationToken).ConfigureAwait(false);
         }
@@ -114,60 +115,55 @@ namespace NCoreUtils.Images
             return new JsonSerializedResult<ImageInfo>(info);
         }
 
+        private IResourceFactory ResourceFactory { get; }
+
+        private IImageResizer ImageResizer { get; }
+
+        private IImageAnalyzer ImageAnalyzer { get; }
+
+        public ImageFunctions(IResourceFactory resourceFactory, IImageResizer imageResizer, IImageAnalyzer imageAnalyzer)
+        {
+            ResourceFactory = resourceFactory;
+            ImageResizer = imageResizer;
+            ImageAnalyzer = imageAnalyzer;
+        }
+
         [FunctionName("Resize")]
-        public static async Task<IActionResult> RunResize(
+        public async Task<IActionResult> RunResize(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "img")] HttpRequest request,
             ILogger log,
             CancellationToken hostCancellationToken)
         {
             // cancellation
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, request.HttpContext.RequestAborted);
-            // setup DI
-            var services = new ServiceCollection();
-            new Startup().ConfigureServices(services, log);
-            await using var rootServiceProvider = services.BuildServiceProvider(true);
-            using (var scope = rootServiceProvider.CreateScope())
+            try
             {
-                try
-                {
-                    var resourceFactory = scope.ServiceProvider.GetRequiredService<IResourceFactory>();
-                    var resizer = scope.ServiceProvider.GetRequiredService<IImageResizer>();
-                    await InvokeResize(log, request, resourceFactory, resizer, cancellationSource.Token);
-                }
-                catch (Exception exn)
-                {
-                    log.LogInformation(exn, "Failed to process request.");
-                    return new JsonErrorResult(exn);
-                }
+                await InvokeResize(log, request, ResourceFactory, ImageResizer, cancellationSource.Token);
+            }
+            catch (Exception exn)
+            {
+                log.LogInformation(exn, "Failed to process request.");
+                return new JsonErrorResult(exn);
             }
             return new OkNoCacheResult();
         }
 
         [FunctionName("Analyze")]
-        public static async Task<IActionResult> RunAnalyze(
+        public async Task<IActionResult> RunAnalyze(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "img/" + Routes.Info)] HttpRequest request,
             ILogger log,
             CancellationToken hostCancellationToken)
         {
             // cancellation
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, request.HttpContext.RequestAborted);
-            // setup DI
-            var services = new ServiceCollection();
-            new Startup().ConfigureServices(services, log);
-            await using var rootServiceProvider = services.BuildServiceProvider(true);
-            using (var scope = rootServiceProvider.CreateScope())
+            try
             {
-                try
-                {
-                    var resourceFactory = scope.ServiceProvider.GetRequiredService<IResourceFactory>();
-                    var analyzer = scope.ServiceProvider.GetRequiredService<IImageAnalyzer>();
-                    await InvokeAnalyze(request, resourceFactory, analyzer, cancellationSource.Token);
-                }
-                catch (Exception exn)
-                {
-                    log.LogInformation(exn, "Failed to process request.");
-                    return new JsonErrorResult(exn);
-                }
+                await InvokeAnalyze(request, ResourceFactory, ImageAnalyzer, cancellationSource.Token);
+            }
+            catch (Exception exn)
+            {
+                log.LogInformation(exn, "Failed to process request.");
+                return new JsonErrorResult(exn);
             }
             return new OkResult();
         }
