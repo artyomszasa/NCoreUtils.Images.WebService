@@ -7,7 +7,7 @@ namespace NCoreUtils.Images.WebService
         public GenericErrorDeserializer(string errorCode) : base(errorCode) { }
 
         public ImageErrorData CreateInstance()
-            => new ImageErrorData(ErrorCode, Description);
+            => new(ErrorCode, Description);
 
         public void ReadProperty(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {

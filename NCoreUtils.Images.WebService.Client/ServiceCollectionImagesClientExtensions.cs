@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +38,11 @@ namespace NCoreUtils.Images
                 HttpClient = httpClient
             });
 
+#if !NETSTANDARD2_1
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
+            Justification = "Dynamic dependency binds required members.")]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ImagesClientConfiguration))]
+#endif
         public static IServiceCollection AddImageResizerClient(
             this IServiceCollection services,
             IConfiguration configuration)
@@ -81,6 +87,11 @@ namespace NCoreUtils.Images
                 HttpClient = httpClient
             });
 
+#if !NETSTANDARD2_1
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
+            Justification = "Dynamic dependency binds required members.")]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ImagesClientConfiguration))]
+#endif
         public static IServiceCollection AddImageAnalyzerClient(
             this IServiceCollection services,
             IConfiguration configuration)

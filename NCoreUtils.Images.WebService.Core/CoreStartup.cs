@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -26,11 +27,21 @@ namespace NCoreUtils.Images
                 .AddHttpContextAccessor();
         }
 
+#if !NETCOREAPP3_1
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
+            Justification = "Dynamic dependency binds required members.")]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ImageResizerOptions))]
+#endif
         protected virtual IImageResizerOptions GetImageResizerOptions()
             => Configuration.GetSection("Images")
                 .Get<ImageResizerOptions>()
                 ?? ImageResizerOptions.Default;
 
+#if !NETCOREAPP3_1
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
+            Justification = "Dynamic dependency binds required members.")]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ServiceConfiguration))]
+#endif
         protected virtual ServiceConfiguration GetServiceConfiguration()
             => Configuration.GetSection("Images")
                 .Get<ServiceConfiguration>()

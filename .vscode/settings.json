@@ -8,9 +8,10 @@
         "NCoreUtils*/obj": true,
         "NCoreUtils*/bin": true
     },
-    "azureFunctions.deploySubpath": "NCoreUtils.Images.Function/bin/Release/netcoreapp3.1/publish",
+    "omnisharp.enableRoslynAnalyzers": true,
+    "azureFunctions.deploySubpath": "NCoreUtils.Images.Function/bin/Release/net6/publish",
     "azureFunctions.projectLanguage": "C#",
-    "azureFunctions.projectRuntime": "~3",
+    "azureFunctions.projectRuntime": "~4",
     "debug.internalConsoleOptions": "neverOpen",
     "azureFunctions.preDeployTask": "publish"
 }

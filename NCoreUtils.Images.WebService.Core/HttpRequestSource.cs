@@ -17,6 +17,9 @@ namespace NCoreUtils.Images
             => _request = request ?? throw new ArgumentNullException(nameof(request));
 
         public IStreamProducer CreateProducer()
-            => StreamProducer.Create((output, cancellationToken) => new ValueTask(_request.Body.CopyToAsync(output, BufferSize)));
+            => StreamProducer.Create((output, cancellationToken) =>
+            {
+                return new ValueTask(_request.Body.CopyToAsync(output, BufferSize, cancellationToken));
+            });
     }
 }

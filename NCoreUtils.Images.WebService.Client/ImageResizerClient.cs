@@ -63,7 +63,15 @@ namespace NCoreUtils.Images
                         payload = new SourceAndDestination(ssource.Uri, default);
                         dest = destination;
                     }
-                    var producer = StreamProducer.Create((ouput, cancellationToken) => new ValueTask(JsonSerializer.SerializeAsync(ouput, payload, _sourceAndDestinationSerializationOptions, cancellationToken)));
+                    var producer = StreamProducer.Create((ouput, cancellationToken) =>
+                    {
+                        return new ValueTask(JsonSerializer.SerializeAsync(
+                            ouput,
+                            payload,
+                            SourceAndDestinationJsonContext.Default.SourceAndDestination,
+                            cancellationToken)
+                        );
+                    });
                     return ResizeOperationContext.Json(producer, dest);
                 }
                 // remote server does not support json-serialization
@@ -107,7 +115,7 @@ namespace NCoreUtils.Images
             Logger.LogDebug("Resize operation starting.");
             var uri = new UriBuilder(endpoint) { Query = queryString }.Uri;
             var context = await GetOperationContextAsync(source, destination, endpoint, cancellationToken).ConfigureAwait(false);
-            Logger.LogDebug("Computed context for resize operation ({0}).", context.ContentType);
+            Logger.LogDebug("Computed context for resize operation ({ContentType}).", context.ContentType);
             try
             {
                 IStreamConsumer consumer;
@@ -140,7 +148,13 @@ namespace NCoreUtils.Images
                         Logger.LogDebug("Received response of the resize request.");
                         await CheckAsync(response, cancellationToken).ConfigureAwait(false);
                         outputMime = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
-                        using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                        await using var stream =
+#if NETSTANDARD2_1
+                            await response.Content.ReadAsStreamAsync()
+#else
+                            await response.Content.ReadAsStreamAsync(cancellationToken)
+#endif
+                            .ConfigureAwait(false);
                         await stream.CopyToAsync(output, 16 * 1024, cancellationToken).ConfigureAwait(false);
                         Logger.LogDebug("Done processing response of the resize request.");
                     }));
@@ -149,7 +163,7 @@ namespace NCoreUtils.Images
                 await context.Producer.ConsumeAsync(consumer, cancellationToken).ConfigureAwait(false);
                 Logger.LogDebug("Resize operation completed.");
             }
-            catch (Exception exn) when (!(exn is ImageException))
+            catch (Exception exn) when (exn is not ImageException)
             {
                 if (IsSocketRelated(exn, out var socketExn))
                 {

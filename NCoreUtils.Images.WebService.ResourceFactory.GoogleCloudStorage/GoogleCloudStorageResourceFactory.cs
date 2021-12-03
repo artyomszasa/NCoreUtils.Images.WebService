@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Web;
 using Microsoft.Extensions.Logging;
 using NCoreUtils.Images.GoogleCloudStorage;
@@ -9,7 +8,7 @@ namespace NCoreUtils.Images
 {
     public class GoogleCloudStorageResourceFactory : IResourceFactory
     {
-        static readonly HashSet<string> _truthy = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        static readonly HashSet<string> _truthy = new(StringComparer.OrdinalIgnoreCase)
         {
             "true",
             "t",
@@ -22,15 +21,12 @@ namespace NCoreUtils.Images
 
         readonly ILoggerFactory _loggerFactory;
 
-        readonly ILogger _logger;
+        readonly GoogleCloudStorageUtils? _gcsUtils;
 
-        readonly IHttpClientFactory? _httpClientFactory;
-
-        public GoogleCloudStorageResourceFactory(ILoggerFactory loggerFactory, IHttpClientFactory? httpClientFactory = default)
+        public GoogleCloudStorageResourceFactory(ILoggerFactory loggerFactory, GoogleCloudStorageUtils? gcsUtils = default)
         {
-            _loggerFactory = loggerFactory;
-            _logger = _loggerFactory.CreateLogger<GoogleCloudStorageResourceFactory>();
-            _httpClientFactory = httpClientFactory;
+            _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+            _gcsUtils = gcsUtils;
         }
 
         public IImageDestination CreateDestination(Uri? uri, Func<IImageDestination> next)
@@ -49,7 +45,7 @@ namespace NCoreUtils.Images
                     contentType: contentType,
                     cacheControl: cacheControl,
                     isPublic: isPublic,
-                    httpClientFactory: _httpClientFactory,
+                    utils: _gcsUtils,
                     logger: _loggerFactory.CreateLogger<GoogleCloudStorageDestination>()
                 );
             }
@@ -65,7 +61,7 @@ namespace NCoreUtils.Images
                 return new GoogleCloudStorageSource(
                     uri: StripQuery(uri),
                     credential: GoogleStorageCredential.ViaAccessToken(accessToken),
-                    httpClientFactory: _httpClientFactory,
+                    utils: _gcsUtils,
                     logger: _loggerFactory.CreateLogger<GoogleCloudStorageSource>()
                 );
             }

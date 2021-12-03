@@ -1,8 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace NCoreUtils.Images.WebService
 {
+    [JsonConverter(typeof(SourceAndDestinationConverter))]
     public struct SourceAndDestination : IEquatable<SourceAndDestination>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31,6 +33,7 @@ namespace NCoreUtils.Images.WebService
 
         public Uri? Destination { get; }
 
+        [JsonConstructor]
         public SourceAndDestination(Uri? source, Uri? destination)
         {
             Source = source;

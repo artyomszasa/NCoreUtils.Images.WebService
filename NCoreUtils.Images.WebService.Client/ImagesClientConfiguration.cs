@@ -16,7 +16,7 @@ namespace NCoreUtils.Images
 
         internal ImagesClientConfiguration<T> AsTyped<T>()
             where T : ImagesClient
-            => new ImagesClientConfiguration<T>
+            => new()
             {
                 EndPoint = EndPoint,
                 AllowInlineData = AllowInlineData,

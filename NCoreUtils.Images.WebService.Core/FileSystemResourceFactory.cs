@@ -6,7 +6,7 @@ namespace NCoreUtils.Images
     {
         public IImageDestination CreateDestination(Uri? uri, Func<IImageDestination> next)
         {
-            if (!(uri is null) && uri.Scheme == "file")
+            if (uri is not null && uri.Scheme == "file")
             {
                 return new FileSystemDestination(uri.AbsolutePath);
             }
@@ -15,7 +15,7 @@ namespace NCoreUtils.Images
 
         public IImageSource CreateSource(Uri? uri, Func<IImageSource> next)
         {
-            if (!(uri is null) && uri.Scheme == "file")
+            if (uri is not null && uri.Scheme == "file")
             {
                 return new FileSystemSource(uri.AbsolutePath);
             }

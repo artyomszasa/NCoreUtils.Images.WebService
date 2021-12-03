@@ -2,6 +2,8 @@
   <PropertyGroup>
     <TargetFrameworks>net6;netcoreapp3.1</TargetFrameworks>
     <Nullable>enable</Nullable>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(Fx3NugetVersion)" />

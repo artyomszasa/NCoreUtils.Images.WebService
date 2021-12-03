@@ -45,7 +45,7 @@ namespace NCoreUtils.Images
                 ImageErrorData data = exn is ImageException e ? GetErrorData(e) : new ImageErrorData(ErrorCodes.GenericError, exn.Message);
                 response.StatusCode = 400;
                 response.ContentType = "application/json; charset=utf-8";
-                await JsonSerializer.SerializeAsync(response.Body, data, ErrorSerialization.Options, context.RequestAborted).ConfigureAwait(false);
+                await ErrorSerialization.SerializeImageErrorDataAsync(response.Body, data, context.RequestAborted).ConfigureAwait(false);
                 await response.Body.FlushAsync(context.RequestAborted).ConfigureAwait(false);
             }
         }

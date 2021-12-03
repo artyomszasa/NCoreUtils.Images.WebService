@@ -46,20 +46,17 @@ namespace NCoreUtils.Images
             {
                 var resourceFactory = context.RequestServices.GetRequiredService<IResourceFactory>();
                 var resizer = context.RequestServices.GetRequiredService<IImageResizer>();
-                var fun = ActivatorUtilities.CreateInstance<CoreFunctions>(context.RequestServices);
-                return fun.InvokeResize(request, resourceFactory, resizer, context.RequestAborted);
+                return CoreFunctions.InvokeResize(request, resourceFactory, resizer, context.RequestAborted);
             }
             if (request.Path == _capabilitiesEndpoint && Eqi(request.Method, "GET"))
             {
-                var fun = ActivatorUtilities.CreateInstance<CoreFunctions>(context.RequestServices);
-                return fun.InvokeCapabilities(context.Response, context.RequestAborted);
+                return CoreFunctions.InvokeCapabilities(context.Response, context.RequestAborted);
             }
             if (request.Path == _infoEndpoint && Eqi(request.Method, "POST"))
             {
                 var resourceFactory = context.RequestServices.GetRequiredService<IResourceFactory>();
                 var analyzer = context.RequestServices.GetRequiredService<IImageAnalyzer>();
-                var fun = ActivatorUtilities.CreateInstance<CoreFunctions>(context.RequestServices);
-                return fun.InvokeAnalyze(request, context.Response, resourceFactory, analyzer, context.RequestAborted);
+                return CoreFunctions.InvokeAnalyze(request, context.Response, resourceFactory, analyzer, context.RequestAborted);
             }
             return _next(context);
         }

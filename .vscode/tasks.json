@@ -84,7 +84,7 @@
             "type": "func",
             "dependsOn": "build",
             "options": {
-                "cwd": "${workspaceFolder}/NCoreUtils.Images.Function/bin/Debug/netcoreapp3.1"
+                "cwd": "${workspaceFolder}/NCoreUtils.Images.Function/bin/Debug/net6"
             },
             "command": "host start",
             "isBackground": true,

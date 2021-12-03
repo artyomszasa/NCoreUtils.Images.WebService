@@ -17,15 +17,9 @@ namespace NCoreUtils.Images
 {
     public class ImageFunctions
     {
-        private static string[] _capabilities = new [] { Capabilities.JsonSerializedImageInfo };
+        private static string[] Capabilities { get; } = new [] { WebService.Capabilities.JsonSerializedImageInfo };
 
-        static readonly JsonSerializerOptions _sourceAndDestinationSerializationOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { SourceAndDestinationConverter.Instance }
-        };
-
-        private static readonly HashSet<string> _truthy = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static HashSet<string> Truthy { get; } = new(StringComparer.OrdinalIgnoreCase)
         {
             "true",
             "t",
@@ -61,7 +55,7 @@ namespace NCoreUtils.Images
                 return S(name) switch
                 {
                     null => default,
-                    string s => _truthy.Contains(s)
+                    string s => Truthy.Contains(s)
                 };
             }
 
@@ -84,7 +78,11 @@ namespace NCoreUtils.Images
         {
             if (IsJsonCompatible(request.ContentType))
             {
-                return JsonSerializer.DeserializeAsync<SourceAndDestination>(request.Body, _sourceAndDestinationSerializationOptions, cancellationToken);
+                return JsonSerializer.DeserializeAsync(
+                    request.Body,
+                    SourceAndDestinationJsonContext.Default.SourceAndDestination,
+                    cancellationToken
+                );
             }
             return default;
         }
@@ -168,13 +166,15 @@ namespace NCoreUtils.Images
             return new OkResult();
         }
 
+#pragma warning disable IDE0060
         [FunctionName("Capabilities")]
         public static Task<IActionResult> RunCapabilities(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "img/" + Routes.Capabilities)] HttpRequest request,
             ILogger log,
             CancellationToken hostCancellationToken)
         {
-            return Task.FromResult<IActionResult>(new JsonSerializedResult<string[]>(_capabilities));
+            return Task.FromResult<IActionResult>(new JsonSerializedResult<string[]>(Capabilities));
         }
+#pragma warning restore IDE0060
     }
 }

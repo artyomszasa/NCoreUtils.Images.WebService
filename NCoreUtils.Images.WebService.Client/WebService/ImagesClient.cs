@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,12 +16,6 @@ namespace NCoreUtils.Images.WebService
 {
     public abstract class ImagesClient
     {
-        protected static readonly JsonSerializerOptions _sourceAndDestinationSerializationOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { SourceAndDestinationConverter.Instance }
-        };
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static string GetUriFromResponse(HttpResponseMessage response)
             => response.RequestMessage?.RequestUri?.AbsoluteUri ?? string.Empty;
@@ -73,8 +68,14 @@ namespace NCoreUtils.Images.WebService
                         ImageErrorData? error;
                         try
                         {
-                            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            error = await JsonSerializer.DeserializeAsync<ImageErrorData>(stream, ErrorSerialization.Options, cancellationToken).ConfigureAwait(false);
+                            await using var stream =
+#if NETSTANDARD2_1
+                                await response.Content.ReadAsStreamAsync()
+#else
+                                await response.Content.ReadAsStreamAsync(cancellationToken)
+#endif
+                                .ConfigureAwait(false);
+                            error = await ErrorSerialization.DeserializeImageErrorDataAsync(stream, cancellationToken).ConfigureAwait(false);
                             if (error is null)
                             {
                                 throw new RemoteImageCommunicationException(
@@ -170,15 +171,25 @@ namespace NCoreUtils.Images.WebService
             try
             {
                 using var client = CreateHttpClient();
-                using var stream = await client.GetStreamAsync(uri).ConfigureAwait(false);
-                var capabilities = new HashSet<string>(await JsonSerializer.DeserializeAsync<string[]>(stream).ConfigureAwait(false) ?? Array.Empty<string>());
-                Logger.LogDebug("Remote server supports following extensions: {0}.", string.Join(", ", capabilities));
+                await using var stream =
+#if NETSTANDARD2_1
+                    await client.GetStreamAsync(uri)
+#else
+                    await client.GetStreamAsync(uri, cancellationToken)
+#endif
+                    .ConfigureAwait(false);
+                var capabilities = new HashSet<string>(
+                    await JsonSerializer.DeserializeAsync(stream, StringArrayJsonContext.Default.StringArray, cancellationToken)
+                        .ConfigureAwait(false)
+                        ?? Array.Empty<string>()
+                );
+                Logger.LogDebug("Remote server supports following extensions: {Capabilities}.", string.Join(", ", capabilities));
                 _cachedCapabilities = capabilities;
                 return capabilities;
             }
             catch (Exception exn)
             {
-                Logger.LogWarning(exn, "Querying extensions from {0} failed ({1}), assuming no extensions supported.", endpoint, exn.Message);
+                Logger.LogWarning(exn, "Querying extensions from {Endpoint} failed ({Message}), assuming no extensions supported.", endpoint, exn.Message);
                 return new HashSet<string>();
             }
         }

@@ -2,7 +2,7 @@ using System.Text;
 
 namespace NCoreUtils.Images.WebService
 {
-    class ErrorDeserializer
+    internal class ErrorDeserializer
     {
         protected static readonly byte[] _keyDescription = Encoding.ASCII.GetBytes(ImageErrorProperties.Description);
 

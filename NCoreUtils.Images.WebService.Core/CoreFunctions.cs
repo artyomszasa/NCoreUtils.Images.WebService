@@ -12,13 +12,10 @@ namespace NCoreUtils.Images
 {
     public class CoreFunctions
     {
-        private static byte[] Capabilities { get; } = JsonSerializer.SerializeToUtf8Bytes(new [] { WebService.Capabilities.JsonSerializedImageInfo });
-
-        private static JsonSerializerOptions SourceAndDestinationSerializationOptions { get; } = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { SourceAndDestinationConverter.Instance }
-        };
+        private static byte[] Capabilities { get; } = JsonSerializer.SerializeToUtf8Bytes(
+            new [] { WebService.Capabilities.JsonSerializedImageInfo },
+            StringArrayJsonContext.Default.StringArray
+        );
 
         private static HashSet<string> Truthy { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -77,23 +74,27 @@ namespace NCoreUtils.Images
 
 
 
-        private ValueTask<SourceAndDestination> ParseSourceAndDestination(HttpRequest request, CancellationToken cancellationToken)
+        private static ValueTask<SourceAndDestination> ParseSourceAndDestination(HttpRequest request, CancellationToken cancellationToken)
         {
             if (IsJsonCompatible(request.ContentType))
             {
-                return JsonSerializer.DeserializeAsync<SourceAndDestination>(request.Body, SourceAndDestinationSerializationOptions, cancellationToken);
+                return JsonSerializer.DeserializeAsync(
+                    request.Body,
+                    SourceAndDestinationJsonContext.Default.SourceAndDestination,
+                    cancellationToken
+                );
             }
             return default;
         }
 
-        private (IImageSource Source, IImageDestination Destination) ResolveSourceAndDestination(IResourceFactory resourceFactory, SourceAndDestination sd)
+        private static (IImageSource Source, IImageDestination Destination) ResolveSourceAndDestination(IResourceFactory resourceFactory, SourceAndDestination sd)
         {
             var source = resourceFactory.CreateSource(sd.Source, () => NotSupportedUri<IImageSource>(sd.Source));
             var destination = resourceFactory.CreateDestination(sd.Destination, () => NotSupportedUri<IImageDestination>(sd.Destination));
             return (source, destination);
         }
 
-        public async Task InvokeCapabilities(HttpResponse response, CancellationToken cancellationToken)
+        public static async Task InvokeCapabilities(HttpResponse response, CancellationToken cancellationToken)
         {
             response.ContentType = "application/json; charset=utf-8";
             response.ContentLength = Capabilities.Length;
@@ -101,21 +102,23 @@ namespace NCoreUtils.Images
             await response.BodyWriter.CompleteAsync().ConfigureAwait(false);
         }
 
-        public async Task InvokeResize(HttpRequest request, IResourceFactory resourceFactory, IImageResizer resizer, CancellationToken cancellationToken)
+        public static async Task InvokeResize(HttpRequest request, IResourceFactory resourceFactory, IImageResizer resizer, CancellationToken cancellationToken)
         {
             var sourceAndDestination = await ParseSourceAndDestination(request, cancellationToken).ConfigureAwait(false);
             var (source, destination) = ResolveSourceAndDestination(resourceFactory, sourceAndDestination);
             await resizer.ResizeAsync(source, destination, ReadResizeOptions(resourceFactory, request.Query), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task InvokeAnalyze(HttpRequest request, HttpResponse response, IResourceFactory resourceFactory, IImageAnalyzer analyzer, CancellationToken cancellationToken)
+        public static async Task InvokeAnalyze(HttpRequest request, HttpResponse response, IResourceFactory resourceFactory, IImageAnalyzer analyzer, CancellationToken cancellationToken)
         {
             var sourceAndDestination = await ParseSourceAndDestination(request, cancellationToken).ConfigureAwait(false);
             var source = resourceFactory.CreateSource(sourceAndDestination.Source, () => NotSupportedUri<IImageSource>(sourceAndDestination.Source));
             var info = await analyzer.AnalyzeAsync(source, cancellationToken).ConfigureAwait(false);
             response.ContentType = "application/json; charset=utf-8";
-            await JsonSerializer.SerializeAsync(response.Body, info, cancellationToken: cancellationToken).ConfigureAwait(false);
-            await response.Body.FlushAsync(cancellationToken).ConfigureAwait(false);
+            await JsonSerializer.SerializeAsync(response.Body, info, ImageInfoJsonContext.Default.ImageInfo, cancellationToken)
+                .ConfigureAwait(false);
+            await response.Body.FlushAsync(cancellationToken)
+                .ConfigureAwait(false);
         }
     }
 }

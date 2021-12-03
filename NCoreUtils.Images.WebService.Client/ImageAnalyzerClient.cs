@@ -12,12 +12,6 @@ namespace NCoreUtils.Images
 {
     public partial class ImageAnalyzerClient : ImagesClient, IImageAnalyzer
     {
-        static readonly JsonSerializerOptions _imageInfoOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { new ImageInfoConverter() }
-        };
-
         public ImageAnalyzerClient(
             ImagesClientConfiguration<ImageAnalyzerClient> configuration,
             ILogger<ImagesClient> logger,
@@ -39,7 +33,15 @@ namespace NCoreUtils.Images
                     // both remote server and image source support json-serialization
                     // NOTE: Destination is always inline --> not used on server
                     var payload = new SourceAndDestination(ssource.Uri, null);
-                    var producer = StreamProducer.Create((ouput, cancellationToken) => new ValueTask(JsonSerializer.SerializeAsync(ouput, payload, _sourceAndDestinationSerializationOptions, cancellationToken)));
+                    var producer = StreamProducer.Create((ouput, cancellationToken) =>
+                    {
+                        return new ValueTask(JsonSerializer.SerializeAsync(
+                            ouput,
+                            payload,
+                            SourceAndDestinationJsonContext.Default.SourceAndDestination,
+                            cancellationToken)
+                        );
+                    });
                     return AnalyzeOperationContext.Json(producer);
                 }
                 // remote server does not support json-serialization
@@ -70,10 +72,13 @@ namespace NCoreUtils.Images
             Logger.LogDebug("Analyze operation starting.");
             var uri = new UriBuilder(endpoint).AppendPathSegment(Routes.Info).Uri;
             var context = await GetOperationContextAsync(source, endpoint, cancellationToken);
-            Logger.LogDebug("Computed context for analyze operation ({0}).", context.ContentType);
+            Logger.LogDebug("Computed context for analyze operation ({ContentType}).", context.ContentType);
             try
             {
-                var consumer = StreamConsumer.Create((input, cancellationToken) => JsonSerializer.DeserializeAsync<ImageInfo>(input, _imageInfoOptions, cancellationToken))
+                var consumer = StreamConsumer
+                    .Create((input, cancellationToken) => {
+                        return JsonSerializer.DeserializeAsync(input, ImageInfoJsonContext.Default.ImageInfo, cancellationToken);
+                    })
                     .Chain(StreamTransformation.Create(async (input, output, cancellationToken) =>
                     {
                         Logger.LogDebug("Sending analyze request.");
@@ -82,8 +87,15 @@ namespace NCoreUtils.Images
                         using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
                         Logger.LogDebug("Received response of the analyze request.");
                         await CheckAsync(response, cancellationToken);
-                        using var stream = await response.Content.ReadAsStreamAsync();
-                        await stream.CopyToAsync(output, 16 * 1024, cancellationToken);
+                        await using var stream =
+#if NETSTANDARD2_1
+                            await response.Content.ReadAsStreamAsync()
+#else
+                            await response.Content.ReadAsStreamAsync(cancellationToken)
+#endif
+                            .ConfigureAwait(false);
+                        await stream.CopyToAsync(output, 16 * 1024, cancellationToken)
+                            .ConfigureAwait(false);
                         Logger.LogDebug("Done processing response of the analyze request.");
                     }));
                 Logger.LogDebug("Initializing analyze operation.");
@@ -91,7 +103,7 @@ namespace NCoreUtils.Images
                 Logger.LogDebug("Analyze operation completed.");
                 return result ?? new ImageInfo(default, default, default, default, new Dictionary<string, string>(), new Dictionary<string, string>());
             }
-            catch (Exception exn) when (!(exn is ImageException))
+            catch (Exception exn) when (exn is not ImageException)
             {
                 if (IsSocketRelated(exn, out var socketExn))
                 {

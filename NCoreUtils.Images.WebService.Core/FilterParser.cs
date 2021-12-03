@@ -8,10 +8,10 @@ namespace NCoreUtils.Images
 {
     public static class FilterParser
     {
-        private static readonly IReadOnlyList<IFilter> _noFilters = new IFilter[0];
+        private static readonly IReadOnlyList<IFilter> _noFilters = Array.Empty<IFilter>();
 
-        private static readonly Regex _regexBlur = new Regex("^blur\\(([0-9]+(\\.[0-9]+)?)\\)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private static readonly Regex _regexWaterMark = new Regex("^watermark\\((.*?),(\\d+),(\\d+),(\\d+)\\)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexBlur = new("^blur\\(([0-9]+(\\.[0-9]+)?)\\)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex _regexWaterMark = new("^watermark\\((.*?),(\\d+),(\\d+),(\\d+)\\)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         public static IReadOnlyList<IFilter> Parse(IResourceFactory resourceFactory, string? input)
         {

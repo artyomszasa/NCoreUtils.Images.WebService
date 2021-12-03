@@ -10,7 +10,7 @@ namespace NCoreUtils.Images.WebService
     {
         static readonly byte[] _keyErrorCode = Encoding.ASCII.GetBytes(ImageErrorProperties.ErrorCode);
 
-        static readonly Dictionary<string, Func<string, IErrorDeserializer>> _deserializers = new Dictionary<string, Func<string, IErrorDeserializer>>
+        static readonly Dictionary<string, Func<string, IErrorDeserializer>> _deserializers = new()
         {
             { ErrorCodes.InternalError, errorCode => new InternalImageErrorDeserializer(errorCode) },
             { ErrorCodes.UnsupportedImageType, errorCode => new UnsupportedImageTypeDeserializer(errorCode) },
