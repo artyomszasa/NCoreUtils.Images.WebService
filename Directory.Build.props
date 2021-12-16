@@ -1,10 +1,10 @@
 <Project>
   <PropertyGroup>
-    <Version>6.0.0-alpha05</Version>
+    <Version>6.0.0-alpha06</Version>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <FxNugetVersion>6.0.0</FxNugetVersion>
     <Fx3NugetVersion>3.1.16</Fx3NugetVersion>
-    <ImagesNugetVersion>6.0.0-alpha05</ImagesNugetVersion>
+    <ImagesNugetVersion>6.0.0-alpha06</ImagesNugetVersion>
   </PropertyGroup>
 </Project>

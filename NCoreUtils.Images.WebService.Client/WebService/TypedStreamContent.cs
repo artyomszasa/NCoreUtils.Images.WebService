@@ -9,6 +9,6 @@ namespace NCoreUtils.Images.WebService
     {
         public TypedStreamContent(Stream stream, MediaTypeHeaderValue contentType)
             : base(stream)
-            => this.Headers.ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
+            => Headers.ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
     }
 }

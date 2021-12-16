@@ -6,11 +6,20 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace NCoreUtils.Images
 {
     public abstract class CoreStartup
     {
+        private sealed class ConfigureImageMagick : IConfigureOptions<ImageMagickImageProviderConfiguration>
+        {
+            public void Configure(ImageMagickImageProviderConfiguration options)
+            {
+                options.ForceAsync = true;
+            }
+        }
+
         protected IConfiguration Configuration { get; }
 
         protected IWebHostEnvironment? Env { get; }
@@ -65,6 +74,7 @@ namespace NCoreUtils.Images
                 .AddHttpClient()
                 // ImageMagick
                 .AddImageMagickResizer()
+                .ConfigureOptions<ConfigureImageMagick>()
                 // source/destination handlers
                 .AddResourceFactories(ConfigureResourceFactories);
         }

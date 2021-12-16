@@ -13,7 +13,7 @@ namespace NCoreUtils.Images
         {
             if (configuration is null)
             {
-                throw new System.ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(configuration));
             }
             if (string.IsNullOrEmpty(configuration.EndPoint))
             {
@@ -62,7 +62,7 @@ namespace NCoreUtils.Images
         {
             if (configuration is null)
             {
-                throw new System.ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(configuration));
             }
             if (string.IsNullOrEmpty(configuration.EndPoint))
             {
