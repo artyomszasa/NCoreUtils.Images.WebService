@@ -54,10 +54,7 @@ namespace NCoreUtils.Images.WebService
                     builder
                         .ClearProviders()
                         .AddConfiguration(configuration)
-                        .AddGoogleFluentd<AspNetCoreLoggerProvider>(projectId: configuration["Google:ProjectId"], configureOptions: o =>
-                        {
-                            o.Configuration.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                        });
+                        .AddGoogleFluentd<AspNetCoreLoggerProvider>(projectId: configuration["Google:ProjectId"]);
                 })
                 .ConfigureWebHost(webBuilder =>
                 {

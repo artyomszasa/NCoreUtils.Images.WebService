@@ -132,6 +132,7 @@ namespace NCoreUtils.Images
             ILogger log,
             CancellationToken hostCancellationToken)
         {
+            Cleanup.PerformCleanup();
             // cancellation
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, request.HttpContext.RequestAborted);
             try
@@ -152,6 +153,7 @@ namespace NCoreUtils.Images
             ILogger log,
             CancellationToken hostCancellationToken)
         {
+            Cleanup.PerformCleanup();
             // cancellation
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, request.HttpContext.RequestAborted);
             try

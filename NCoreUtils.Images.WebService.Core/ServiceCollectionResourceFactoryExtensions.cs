@@ -1,11 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NCoreUtils.Images
 {
     public static class ServiceCollectionResourceFactoryExtensions
     {
-        public static IServiceCollection AddResourceFactory<TFactory>(this IServiceCollection services)
+        public static IServiceCollection AddResourceFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TFactory>(this IServiceCollection services)
             where TFactory : class, IResourceFactory
             => services.AddSingleton<IResourceFactory, TFactory>();
 

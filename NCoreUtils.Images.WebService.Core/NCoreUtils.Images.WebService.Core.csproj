@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;netcoreapp3.1</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <IsTrimmable>true</IsTrimmable>
@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(Fx3NugetVersion)" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="3.1.9" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(FxNugetVersion)" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.0" />
   </ItemGroup>

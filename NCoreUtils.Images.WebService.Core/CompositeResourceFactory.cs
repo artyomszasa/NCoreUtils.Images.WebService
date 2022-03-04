@@ -1,12 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NCoreUtils.Images
 {
     public class CompositeResourceFactory : IResourceFactory
     {
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067",
+            Justification = "Types are preserved upon adding in CompositeResourceFactoryBuilder.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static IResourceFactory ActivateFactory(IServiceProvider serviceProvider, Type type)
+            => (IResourceFactory)ActivatorUtilities.CreateInstance(serviceProvider, type);
+
         public IReadOnlyList<IResourceFactory> Factories { get; }
 
         public CompositeResourceFactory(IServiceProvider serviceProvider, CompositeResourceFactoryBuilder builder)
@@ -20,7 +28,7 @@ namespace NCoreUtils.Images
                 throw new ArgumentNullException(nameof(builder));
             }
             Factories = builder.Factories
-                .Select(type => (IResourceFactory)ActivatorUtilities.CreateInstance(serviceProvider, type))
+                .Select(type => ActivateFactory(serviceProvider, type))
                 .ToArray();
         }
 

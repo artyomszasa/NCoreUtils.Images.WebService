@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NCoreUtils.Images
 {
@@ -7,7 +8,7 @@ namespace NCoreUtils.Images
     {
         internal List<Type> Factories { get; } = new List<Type>();
 
-        public CompositeResourceFactoryBuilder Add(Type factoryType)
+        public CompositeResourceFactoryBuilder Add([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type factoryType)
         {
             if (!typeof(IResourceFactory).IsAssignableFrom(factoryType))
             {
@@ -17,7 +18,7 @@ namespace NCoreUtils.Images
             return this;
         }
 
-        public CompositeResourceFactoryBuilder Add<TFactory>()
+        public CompositeResourceFactoryBuilder Add<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TFactory>()
             where TFactory : IResourceFactory
             => Add(typeof(TFactory));
     }

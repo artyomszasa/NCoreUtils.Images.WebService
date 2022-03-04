@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <ServerGarbageCollection>false</ServerGarbageCollection>
@@ -19,7 +19,7 @@
     <ProjectReference Include="..\NCoreUtils.Images.WebService.ResourceFactory.GoogleCloudStorage\NCoreUtils.Images.WebService.ResourceFactory.GoogleCloudStorage.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="3.1.0.1" />
-    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="3.1.0.1" />
+    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="6.0.0-alpha03" />
+    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="6.0.0-alpha03" />
   </ItemGroup>
 </Project>
