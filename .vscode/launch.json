@@ -8,13 +8,14 @@
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/NCoreUtils.Images.WebService/bin/Debug/net6/NCoreUtils.Images.WebService.dll",
+            "preLaunchTask": "build-gcr",
+            "program": "${workspaceFolder}/NCoreUtils.Images.WebService.GoogleCloudRun/bin/Debug/net6.0/NCoreUtils.Images.WebService.GoogleCloudRun.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/NCoreUtils.Images.WebService",
+            "cwd": "${workspaceFolder}/NCoreUtils.Images.WebService.GoogleCloudRun",
             "stopAtEntry": false,
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "GOOGLE_APPLICATION_CREDENTIALS": "/etc/google/wlb-2018.json"
             },
             "suppressJITOptimizations": true
         },
