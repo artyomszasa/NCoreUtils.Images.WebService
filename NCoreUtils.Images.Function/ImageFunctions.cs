@@ -158,14 +158,13 @@ namespace NCoreUtils.Images
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, request.HttpContext.RequestAborted);
             try
             {
-                await InvokeAnalyze(request, ResourceFactory, ImageAnalyzer, cancellationSource.Token);
+                return await InvokeAnalyze(request, ResourceFactory, ImageAnalyzer, cancellationSource.Token);
             }
             catch (Exception exn)
             {
                 log.LogInformation(exn, "Failed to process request.");
                 return new JsonErrorResult(exn);
             }
-            return new OkResult();
         }
 
 #pragma warning disable IDE0060
