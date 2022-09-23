@@ -20,6 +20,7 @@
     <DefineConstants Condition=" '$(EnableGoogleCloudStorage)' == 'true' ">$(DefineConstants);EnableGoogleCloudStorage</DefineConstants>
     <DefineConstants Condition=" '$(EnableAzureBlobStorage)' == 'true' ">$(DefineConstants);EnableAzureBlobStorage</DefineConstants>
     <DefineConstants Condition=" '$(EnableLocalStorage)' == 'true' ">$(DefineConstants);EnableLocalStorage</DefineConstants>
+    <DefineConstants Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">$(DefineConstants);EnableGoogleFluentdLogging</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.csproj" />
@@ -36,5 +37,9 @@
     <PackageReference Include="System.Runtime" Version="4.3.1" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">
+    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="6.0.0-alpha03" />
+    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="6.0.0-alpha03" />
   </ItemGroup>
 </Project>

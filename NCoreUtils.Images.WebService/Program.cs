@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+#if EnableGoogleFluentdLogging
+using NCoreUtils.Logging;
+#endif
 
 namespace NCoreUtils.Images.WebService
 {
@@ -51,7 +54,11 @@ namespace NCoreUtils.Images.WebService
                     builder
                         .ClearProviders()
                         .AddConfiguration(configuration)
+#if EnableGoogleFluentdLogging
+                        .AddGoogleFluentd<AspNetCoreLoggerProvider>(projectId: configuration["Google:ProjectId"]);
+#else
                         .AddConsole();
+#endif
                 })
                 .ConfigureWebHost(webBuilder =>
                 {
