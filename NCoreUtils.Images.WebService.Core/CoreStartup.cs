@@ -1,4 +1,6 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -36,25 +38,71 @@ namespace NCoreUtils.Images
                 .AddHttpContextAccessor();
         }
 
-#if !NETCOREAPP3_1
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
-            Justification = "Dynamic dependency binds required members.")]
-        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ImageResizerOptions))]
-#endif
         protected virtual IImageResizerOptions GetImageResizerOptions()
-            => Configuration.GetSection("Images")
-                .Get<ImageResizerOptions>()
-                ?? ImageResizerOptions.Default;
+        {
+            var section = Configuration.GetSection("Images");
+            var options = new ImageResizerOptions();
+            var rawMemoryLimit = section[nameof(ImageResizerOptions.MemoryLimit)];
+            if (rawMemoryLimit is not null)
+            {
+                if (long.TryParse(rawMemoryLimit, NumberStyles.Integer, CultureInfo.InvariantCulture, out var memoryLimit))
+                {
+                    options.MemoryLimit = memoryLimit;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Invalid value for Images:{nameof(ImageResizerOptions.MemoryLimit)}: \"{rawMemoryLimit}\".");
+                }
+            }
+            foreach (var (key, value) in section.GetSection(nameof(ImageResizerOptions.Quality)).AsEnumerable())
+            {
+                if (value is not null)
+                {
+                    if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ivalue))
+                    {
+                        options.Quality[key] = ivalue;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Invalid value for Images:{nameof(ImageResizerOptions.Quality)}:{key}: \"{value}\".");
+                    }
+                }
+            }
+            foreach (var (key, value) in section.GetSection(nameof(ImageResizerOptions.Optimize)).AsEnumerable())
+            {
+                if (value is not null)
+                {
+                    if (bool.TryParse(value, out var bvalue))
+                    {
+                        options.Optimize[key] = bvalue;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Invalid value for Images:{nameof(ImageResizerOptions.Optimize)}:{key}: \"{value}\".");
+                    }
+                }
+            }
+            return options;
+        }
 
-#if !NETCOREAPP3_1
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
-            Justification = "Dynamic dependency binds required members.")]
-        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ServiceConfiguration))]
-#endif
         protected virtual ServiceConfiguration GetServiceConfiguration()
-            => Configuration.GetSection("Images")
-                .Get<ServiceConfiguration>()
-                ?? new ServiceConfiguration();
+        {
+            var section = Configuration.GetSection("Images");
+            var configuration = new ServiceConfiguration();
+            var rawMaxConcurrentOps = section[nameof(ServiceConfiguration.MaxConcurrentOps)];
+            if (rawMaxConcurrentOps is not null)
+            {
+                if (int.TryParse(rawMaxConcurrentOps, NumberStyles.Integer, CultureInfo.InvariantCulture, out var maxConcurrentOps))
+                {
+                    configuration.MaxConcurrentOps = maxConcurrentOps;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Invalid value for Images:{nameof(ServiceConfiguration.MaxConcurrentOps)}: \"{rawMaxConcurrentOps}\".");
+                }
+            }
+            return configuration;
+        }
 
         protected abstract void ConfigureResourceFactories(CompositeResourceFactoryBuilder b);
 

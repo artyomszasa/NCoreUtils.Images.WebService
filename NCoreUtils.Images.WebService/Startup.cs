@@ -1,5 +1,3 @@
-using System.Text.Json;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
@@ -14,12 +12,19 @@ namespace NCoreUtils.Images.WebService
             b
                 // inline data
                 .Add<DefaultResourceFactory>()
+#if EnableGoogleCloudStorage
                 // GCS
                 .Add<GoogleCloudStorageResourceFactory>()
+#endif
+#if EnableAzureBlobStorage
                 // Azure Bloc Storage
                 .Add<AzureBlobStorageResourceFactory>()
+#endif
+#if EnableLocalStorage
                 // locally mounted fs
-                .Add<FileSystemResourceFactory>();
+                .Add<FileSystemResourceFactory>()
+#endif
+                ;
         }
     }
 }

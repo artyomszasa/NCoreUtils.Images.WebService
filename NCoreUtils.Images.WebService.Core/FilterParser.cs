@@ -44,7 +44,6 @@ namespace NCoreUtils.Images
                     {
                         filters[i] = new WaterMark(source, gravity);
                     }
-
                 }
                 else
                 {

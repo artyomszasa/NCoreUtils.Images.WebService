@@ -13,19 +13,26 @@
     <RootNamespace>NCoreUtils.Images</RootNamespace>
     <!-- FIXME -->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <!-- CONDITIONAL COMPILATION -->
+    <EnableGoogleCloudStorage Condition=" '$(EnableGoogleCloudStorage)' == '' ">true</EnableGoogleCloudStorage>
+    <EnableAzureBlobStorage Condition=" '$(EnableAzureBlobStorage)' == '' ">true</EnableAzureBlobStorage>
+    <EnableLocalStorage Condition=" '$(EnableLocalStorage)' == '' ">true</EnableLocalStorage>
+    <DefineConstants Condition=" '$(EnableGoogleCloudStorage)' == 'true' ">$(DefineConstants);EnableGoogleCloudStorage</DefineConstants>
+    <DefineConstants Condition=" '$(EnableAzureBlobStorage)' == 'true' ">$(DefineConstants);EnableAzureBlobStorage</DefineConstants>
+    <DefineConstants Condition=" '$(EnableLocalStorage)' == 'true' ">$(DefineConstants);EnableLocalStorage</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.csproj" />
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Core\NCoreUtils.Images.WebService.Core.csproj" />
-    <ProjectReference Include="..\NCoreUtils.Images.WebService.ResourceFactory.GoogleCloudStorage\NCoreUtils.Images.WebService.ResourceFactory.GoogleCloudStorage.csproj" />
-    <ProjectReference Include="..\NCoreUtils.Images.WebService.ResourceFactory.AzureBlobStorage\NCoreUtils.Images.WebService.ResourceFactory.AzureBlobStorage.csproj" />
+    <ProjectReference Include="..\NCoreUtils.Images.WebService.ResourceFactory.GoogleCloudStorage\NCoreUtils.Images.WebService.ResourceFactory.GoogleCloudStorage.csproj" Condition=" '$(EnableGoogleCloudStorage)' == 'true' " />
+    <ProjectReference Include="..\NCoreUtils.Images.WebService.ResourceFactory.AzureBlobStorage\NCoreUtils.Images.WebService.ResourceFactory.AzureBlobStorage.csproj" Condition=" '$(EnableAzureBlobStorage)' == 'true' " />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.0" />
     <!--
     <PackageReference Include="Microsoft.NETCore.Targets" Version="6.0.0" />
     -->
-    <PackageReference Include="NCoreUtils.Extensions.Memory" Version="3.0.0.1" />
+    <PackageReference Include="NCoreUtils.Extensions.Memory" Version="3.0.0.5" />
     <PackageReference Include="System.Runtime" Version="4.3.1" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
