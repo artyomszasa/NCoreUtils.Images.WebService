@@ -30,7 +30,7 @@ namespace NCoreUtils.Images
             response.StatusCode = 400;
             response.Headers.Append("Cache-Control", "no-store, no-cache");
             response.ContentType = "application/json; charset=utf-8";
-            await JsonSerializer.SerializeAsync(response.Body, data, ErrorSerialization.Options, context.HttpContext.RequestAborted).ConfigureAwait(false);
+            await ErrorSerialization.SerializeImageErrorDataAsync(response.Body, data, context.HttpContext.RequestAborted).ConfigureAwait(false);
             await response.Body.FlushAsync(context.HttpContext.RequestAborted).ConfigureAwait(false);
         }
     }

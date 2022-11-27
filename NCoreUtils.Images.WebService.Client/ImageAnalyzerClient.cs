@@ -20,19 +20,19 @@ namespace NCoreUtils.Images
         { }
 
         protected virtual async ValueTask<AnalyzeOperationContext> GetOperationContextAsync(
-            IImageSource source,
+            IReadableResource source,
             string endpoint,
             CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (source is ISerializableImageResource ssource)
+            if (source is ISerializableResource ssource)
             {
                 // source image is json-serializable
                 if (await IsJsonSerializationSupportedAsync(endpoint, cancellationToken).ConfigureAwait(false))
                 {
                     // both remote server and image source support json-serialization
                     // NOTE: Destination is always inline --> not used on server
-                    var payload = new SourceAndDestination(ssource.Uri, null);
+                    var payload = new SourceAndDestination(await ssource.GetUriAsync(cancellationToken), null);
                     var producer = StreamProducer.Create((ouput, cancellationToken) =>
                     {
                         return new ValueTask(JsonSerializer.SerializeAsync(
@@ -63,7 +63,7 @@ namespace NCoreUtils.Images
         }
 
         protected virtual async ValueTask<ImageInfo> InvokeGetImageInfoAsync(
-            IImageSource source,
+            IReadableResource source,
             string endpoint,
             CancellationToken cancellationToken)
         {
@@ -118,7 +118,7 @@ namespace NCoreUtils.Images
             }
         }
 
-        public virtual ValueTask<ImageInfo> AnalyzeAsync(IImageSource source, CancellationToken cancellationToken = default)
+        public virtual ValueTask<ImageInfo> AnalyzeAsync(IReadableResource source, CancellationToken cancellationToken = default)
             => InvokeGetImageInfoAsync(source, Configuration.EndPoint, cancellationToken);
     }
 }

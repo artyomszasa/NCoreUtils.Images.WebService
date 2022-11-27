@@ -32,7 +32,10 @@ namespace NCoreUtils.Images
                 else if (m2.Success)
                 {
                     var uri = new Uri(m2.Groups[1].Value);
-                    var source = resourceFactory.CreateSource(uri, () => CoreFunctions.NotSupportedUri<IImageSource>(uri));
+                    if (!resourceFactory.TryCreateReadable(uri, out var source))
+                    {
+                        CoreFunctions.NotSupportedUri(uri);
+                    }
                     var x = int.Parse(m2.Groups[3].Value, NumberStyles.Number, CultureInfo.InvariantCulture);
                     var y = int.Parse(m2.Groups[4].Value, NumberStyles.Number, CultureInfo.InvariantCulture);
                     var gravity = (WaterMarkGravity)int.Parse(m2.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture);

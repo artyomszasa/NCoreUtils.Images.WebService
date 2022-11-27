@@ -19,6 +19,9 @@ namespace NCoreUtils.Images.WebService
         private sealed class DummyLogger : ILogger
         {
             public IDisposable BeginScope<TState>(TState state)
+#if NET7_0_OR_GREATER
+                where TState : notnull
+#endif
                 => DummyDisposable.Singleton;
 
             public bool IsEnabled(LogLevel logLevel)

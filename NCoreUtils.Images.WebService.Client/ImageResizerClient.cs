@@ -37,30 +37,36 @@ namespace NCoreUtils.Images
         { }
 
         protected virtual async ValueTask<ResizeOperationContext> GetOperationContextAsync(
-            IImageSource source,
-            IImageDestination destination,
+            IReadableResource source,
+            IWritableResource destination,
             string endpoint,
             CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (source is ISerializableImageResource ssource)
+            if (source is ISerializableResource ssource)
             {
                 // source image is json-serializable
                 if (await IsJsonSerializationSupportedAsync(endpoint, cancellationToken).ConfigureAwait(false))
                 {
                     // both remote server and image source support json-serialization
                     SourceAndDestination payload;
-                    IImageDestination? dest;
-                    if (destination is ISerializableImageResource sdestination)
+                    IWritableResource? dest;
+                    if (destination is ISerializableResource sdestination)
                     {
                         // image destination does also support json-serialization --> destination in payload, no consumer.
-                        payload = new SourceAndDestination(ssource.Uri, sdestination.Uri);
+                        payload = new SourceAndDestination(
+                            await ssource.GetUriAsync(cancellationToken).ConfigureAwait(false),
+                            await sdestination.GetUriAsync(cancellationToken).ConfigureAwait(false)
+                        );
                         dest = default;
                     }
                     else
                     {
                         // image destination does also support json-serialization --> null in payload, destination is the consumer.
-                        payload = new SourceAndDestination(ssource.Uri, default);
+                        payload = new SourceAndDestination(
+                            await ssource.GetUriAsync(cancellationToken).ConfigureAwait(false),
+                            default
+                        );
                         dest = destination;
                     }
                     var producer = StreamProducer.Create((ouput, cancellationToken) =>
@@ -89,7 +95,7 @@ namespace NCoreUtils.Images
             {
                 throw new InvalidOperationException("Source image does not support json serialization. Either enable inline data or use json-serializable image source.");
             }
-            if (destination is ISerializableImageResource)
+            if (destination is ISerializableResource)
             {
                 if (Configuration.AllowInlineData)
                 {
@@ -104,8 +110,8 @@ namespace NCoreUtils.Images
         }
 
         protected virtual async ValueTask InvokeResizeAsync(
-            IImageSource source,
-            IImageDestination destination,
+            IReadableResource source,
+            IWritableResource destination,
             string queryString,
             string endpoint,
             CancellationToken cancellationToken)
@@ -137,7 +143,7 @@ namespace NCoreUtils.Images
                     var finalConsumer = StreamConsumer.Delay(_ =>
                     {
                         Logger.LogDebug("Creating consumer for resize operation");
-                        return new ValueTask<IStreamConsumer>(context.Destination.CreateConsumer(new ContentInfo(outputMime)));
+                        return new ValueTask<IStreamConsumer>(context.Destination.CreateConsumer(new ResourceInfo(outputMime)));
                     });
                     consumer = finalConsumer.Chain(StreamTransformation.Create(async (input, output, cancellationToken) =>
                     {
@@ -179,7 +185,7 @@ namespace NCoreUtils.Images
             }
         }
 
-        public virtual ValueTask ResizeAsync(IImageSource source, IImageDestination destination, ResizeOptions options, CancellationToken cancellationToken = default)
+        public virtual ValueTask ResizeAsync(IReadableResource source, IWritableResource destination, ResizeOptions options, CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(options);
             return InvokeResizeAsync(source, destination, queryString, Configuration.EndPoint, cancellationToken);

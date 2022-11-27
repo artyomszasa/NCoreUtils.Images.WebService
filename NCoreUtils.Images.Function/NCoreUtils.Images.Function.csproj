@@ -8,12 +8,11 @@
   <ItemGroup>
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.csproj" />
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Core\NCoreUtils.Images.WebService.Core.csproj" />
-    <ProjectReference Include="..\NCoreUtils.Images.WebService.ResourceFactory.AzureBlobStorage\NCoreUtils.Images.WebService.ResourceFactory.AzureBlobStorage.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
-    <PackageReference Include="NCoreUtils.Images.AzureBlobStorage" Version="$(ImagesNugetVersion)" />
+    <PackageReference Include="NCoreUtils.Resources.Azure.Blob" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

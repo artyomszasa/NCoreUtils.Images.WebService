@@ -1,7 +1,8 @@
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NCoreUtils.Images.WebService;
+using Microsoft.Extensions.Options;
+using NCoreUtils.Resources;
 
 [assembly: FunctionsStartup(typeof(NCoreUtils.Images.Startup))]
 
@@ -15,11 +16,11 @@ namespace NCoreUtils.Images
 
             protected override void AddHttpContextAccessor(IServiceCollection services) { }
 
-            protected override void ConfigureResourceFactories(CompositeResourceFactoryBuilder b)
+            protected override void ConfigureResourceFactories(OptionsBuilder<CompositeResourceFactoryConfiguration> b)
             {
                 b
                     // Azure Bloc Storage
-                    .Add<AzureBlobStorageResourceFactory>();
+                    .AddAzureBlobResourceFactory();
             }
         }
 

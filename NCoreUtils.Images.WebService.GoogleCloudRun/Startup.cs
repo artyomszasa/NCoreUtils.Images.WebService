@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using NCoreUtils.Resources;
 
 namespace NCoreUtils.Images.WebService
 {
@@ -7,13 +9,11 @@ namespace NCoreUtils.Images.WebService
     {
         public Startup(IConfiguration configuration, IWebHostEnvironment env) : base(configuration, env) { }
 
-        protected override void ConfigureResourceFactories(CompositeResourceFactoryBuilder b)
+        protected override void ConfigureResourceFactories(OptionsBuilder<CompositeResourceFactoryConfiguration> b)
         {
             b
-                // inline data
-                .Add<DefaultResourceFactory>()
                 // GCS
-                .Add<GoogleCloudStorageResourceFactory>();
+                .AddGoogleCloudStorageResourceFactory(passthrough: false);
         }
     }
 }

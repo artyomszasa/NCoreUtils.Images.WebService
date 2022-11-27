@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using NCoreUtils.Resources;
 
 namespace NCoreUtils.Images
 {
@@ -104,7 +105,7 @@ namespace NCoreUtils.Images
             return configuration;
         }
 
-        protected abstract void ConfigureResourceFactories(CompositeResourceFactoryBuilder b);
+        protected abstract void ConfigureResourceFactories(OptionsBuilder<CompositeResourceFactoryConfiguration> b);
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
@@ -124,7 +125,10 @@ namespace NCoreUtils.Images
                 .AddImageMagickResizer()
                 .ConfigureOptions<ConfigureImageMagick>()
                 // source/destination handlers
-                .AddResourceFactories(ConfigureResourceFactories);
+                .AddCompositeResourceFactory(b =>
+                {
+                    ConfigureResourceFactories(b.AddAspNetCoreResourceFactory());
+                });
         }
 
         public virtual void Configure(IApplicationBuilder app)

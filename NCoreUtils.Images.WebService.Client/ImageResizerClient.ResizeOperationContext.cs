@@ -11,19 +11,19 @@ namespace NCoreUtils.Images
 
             static readonly MediaTypeHeaderValue _json = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
 
-            public static ResizeOperationContext Inline(IStreamProducer producer, IImageDestination destination)
+            public static ResizeOperationContext Inline(IStreamProducer producer, IWritableResource destination)
                 => new(_binary, producer, destination);
 
-            public static ResizeOperationContext Json(IStreamProducer producer, IImageDestination? destination = default)
+            public static ResizeOperationContext Json(IStreamProducer producer, IWritableResource? destination = default)
                 => new(_json, producer, destination);
 
             public MediaTypeHeaderValue ContentType { get; }
 
             public IStreamProducer Producer { get; }
 
-            public IImageDestination? Destination { get; }
+            public IWritableResource? Destination { get; }
 
-            ResizeOperationContext(MediaTypeHeaderValue contentType, IStreamProducer producer, IImageDestination? destination)
+            ResizeOperationContext(MediaTypeHeaderValue contentType, IStreamProducer producer, IWritableResource? destination)
             {
                 ContentType = contentType;
                 Producer = producer;
