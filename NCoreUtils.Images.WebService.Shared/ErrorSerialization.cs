@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,19 +16,17 @@ namespace NCoreUtils.Images.WebService
             Options.Converters.Add(new ImageErrorConverter());
         }
 
-#if !NETSTANDARD2_1
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
-            Justification = "Potentially serializable types referenced directly within converter.")]
-#endif
         public static ValueTask<ImageErrorData?> DeserializeImageErrorDataAsync(System.IO.Stream stream, CancellationToken cancellationToken)
-            => JsonSerializer.DeserializeAsync<ImageErrorData>(stream, ErrorSerialization.Options, cancellationToken);
+        {
+            var typeInfo = (JsonTypeInfo<ImageErrorData>)Options.GetTypeInfo(typeof(ImageErrorData));
+            return JsonSerializer.DeserializeAsync<ImageErrorData>(stream, typeInfo, cancellationToken);
+        }
 
-#if !NETSTANDARD2_1
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026",
-            Justification = "Potentially serializable types referenced directly within converter.")]
-#endif
         public static Task SerializeImageErrorDataAsync(System.IO.Stream stream, ImageErrorData data, CancellationToken cancellationToken)
-            => JsonSerializer.SerializeAsync(stream, data, ErrorSerialization.Options, cancellationToken);
+        {
+            var typeInfo = (JsonTypeInfo<ImageErrorData>)Options.GetTypeInfo(typeof(ImageErrorData));
+            return JsonSerializer.SerializeAsync(stream, data, typeInfo, cancellationToken);
+        }
 
     }
 }
