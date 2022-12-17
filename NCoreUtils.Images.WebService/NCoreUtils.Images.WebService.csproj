@@ -39,7 +39,7 @@
     <PackageReference Include="NCoreUtils.Resources.FileSystem" Version="7.0.0" Condition=" '$(EnableLocalStorage)' == 'true' " />
   </ItemGroup>
   <ItemGroup Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">
-    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="6.0.0-alpha03" />
-    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="6.0.0-alpha03" />
+    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="6.0.0-alpha09" />
+    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="6.0.0-alpha09" />
   </ItemGroup>
 </Project>
