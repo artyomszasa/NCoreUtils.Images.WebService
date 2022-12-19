@@ -34,7 +34,7 @@
     <PackageReference Include="NCoreUtils.Extensions.Memory" Version="7.0.0" />
     <PackageReference Include="System.Runtime" Version="4.3.1" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
-    <PackageReference Include="NCoreUtils.Resources.Google.Cloud.Storage" Version="7.0.0" Condition=" '$(EnableGoogleCloudStorage)' == 'true' " />
+    <PackageReference Include="NCoreUtils.Resources.Google.Cloud.Storage" Version="7.0.0.1" Condition=" '$(EnableGoogleCloudStorage)' == 'true' " />
     <PackageReference Include="NCoreUtils.Resources.Azure.Blob" Version="7.0.0" Condition=" '$(EnableAzureBlobStorage)' == 'true' " />
     <PackageReference Include="NCoreUtils.Resources.FileSystem" Version="7.0.0" Condition=" '$(EnableLocalStorage)' == 'true' " />
   </ItemGroup>
