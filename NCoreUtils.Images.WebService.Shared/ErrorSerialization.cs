@@ -6,14 +6,6 @@ namespace NCoreUtils.Images.WebService;
 
 internal static class ErrorSerialization
 {
-    public static JsonSerializerOptions Options { get; }
-
-    static ErrorSerialization()
-    {
-        Options = new JsonSerializerOptions();
-        Options.Converters.Add(new ImageErrorConverter());
-    }
-
     public static ValueTask<ImageErrorData?> DeserializeImageErrorDataAsync(System.IO.Stream stream, CancellationToken cancellationToken)
         => JsonSerializer.DeserializeAsync<ImageErrorData>(stream, ImageErrorSerializerContext.Default.ImageErrorData, cancellationToken);
 
