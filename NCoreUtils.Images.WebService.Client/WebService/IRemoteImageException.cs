@@ -1,7 +1,6 @@
-namespace NCoreUtils.Images.WebService
+namespace NCoreUtils.Images.WebService;
+
+public interface IRemoteImageException
 {
-    public interface IRemoteImageException
-    {
-        string EndPoint { get; }
-    }
+    string EndPoint { get; }
 }

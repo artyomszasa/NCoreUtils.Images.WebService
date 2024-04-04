@@ -3,12 +3,11 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace NCoreUtils.Images.WebService
+namespace NCoreUtils.Images.WebService;
+
+internal class TypedStreamContent : StreamContent
 {
-    class TypedStreamContent : StreamContent
-    {
-        public TypedStreamContent(Stream stream, MediaTypeHeaderValue contentType)
-            : base(stream)
-            => Headers.ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
-    }
+    public TypedStreamContent(Stream stream, MediaTypeHeaderValue contentType)
+        : base(stream)
+        => Headers.ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
 }

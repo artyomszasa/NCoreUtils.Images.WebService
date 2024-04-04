@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <ServerGarbageCollection>false</ServerGarbageCollection>
@@ -9,6 +9,7 @@
     <PublishReadyToRun>true</PublishReadyToRun>
     <PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
     <PublishTrimmed>true</PublishTrimmed>
+    <PublishAot>true</PublishAot>
     <TrimMode>full</TrimMode>
     <RootNamespace>NCoreUtils.Images</RootNamespace>
     <!-- FIXME -->
@@ -22,24 +23,25 @@
     <DefineConstants Condition=" '$(EnableLocalStorage)' == 'true' ">$(DefineConstants);EnableLocalStorage</DefineConstants>
     <DefineConstants Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">$(DefineConstants);EnableGoogleFluentdLogging</DefineConstants>
   </PropertyGroup>
+  <!--
   <ItemGroup>
     <TrimmerRootDescriptor Include="NCoreUtils.Images.WebService.trim.xml" />
   </ItemGroup>
+  -->
   <ItemGroup>
-    <ProjectReference Include="..\NCoreUtils.Images.WebService.Shared\NCoreUtils.Images.WebService.Shared.csproj" />
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Core\NCoreUtils.Images.WebService.Core.csproj" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(EnableGoogleCloudStorage)' == 'true' ">
+    <PackageReference Include="NCoreUtils.Resources.Google.Cloud.Storage" Version="8.0.0" />
+    <PackageReference Include="NCoreUtils.Extensions.Google.Cloud.Storage.ServiceAccount" Version="8.0.0-rc00" />
+  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.0" />
-    <PackageReference Include="NCoreUtils.Extensions.Memory" Version="7.0.0" />
-    <PackageReference Include="System.Runtime" Version="4.3.1" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
-    <PackageReference Include="NCoreUtils.Resources.Google.Cloud.Storage" Version="7.0.0.1" Condition=" '$(EnableGoogleCloudStorage)' == 'true' " />
-    <PackageReference Include="NCoreUtils.Resources.Azure.Blob" Version="7.0.0" Condition=" '$(EnableAzureBlobStorage)' == 'true' " />
-    <PackageReference Include="NCoreUtils.Resources.FileSystem" Version="7.0.0" Condition=" '$(EnableLocalStorage)' == 'true' " />
+    <PackageReference Include="NCoreUtils.Extensions.Memory" Version="8.0.0" />
+    <PackageReference Include="NCoreUtils.Resources.Azure.Blob" Version="8.0.0" Condition=" '$(EnableAzureBlobStorage)' == 'true' " />
+    <PackageReference Include="NCoreUtils.Resources.FileSystem" Version="8.0.0" Condition=" '$(EnableLocalStorage)' == 'true' " />
   </ItemGroup>
   <ItemGroup Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">
-    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="6.0.0-alpha09" />
-    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="6.0.0-alpha09" />
+    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="8.0.0" />
+    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="8.0.0" />
   </ItemGroup>
 </Project>

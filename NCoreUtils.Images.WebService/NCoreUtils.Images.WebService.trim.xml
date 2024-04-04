@@ -4,5 +4,4 @@
   <assembly fullname="Google.Apis.Auth" preserve="all" />
   <assembly fullname="Google.Apis.Core" preserve="all" />
   <assembly fullname="Magick.NET.Core" preserve="all" />
-  <assembly fullname="Newtonsoft.Json" preserve="all" />
 </linker>

@@ -1,31 +1,30 @@
 using NCoreUtils.Images.WebService;
 
-namespace NCoreUtils.Images
+namespace NCoreUtils.Images;
+
+public class ImagesClientConfiguration
 {
-    public class ImagesClientConfiguration
-    {
-        public const string DefaultHttpClient = "NCoreUtils.Images";
+    public const string DefaultHttpClient = "NCoreUtils.Images";
 
-        public string EndPoint { get; set; } = string.Empty;
+    public string EndPoint { get; set; } = string.Empty;
 
-        public bool AllowInlineData { get; set; } = false;
+    public bool AllowInlineData { get; set; } = false;
 
-        public bool CacheCapabilities { get; set; } = true;
+    public bool CacheCapabilities { get; set; } = true;
 
-        public string HttpClient { get; set; } = DefaultHttpClient;
+    public string HttpClient { get; set; } = DefaultHttpClient;
 
-        internal ImagesClientConfiguration<T> AsTyped<T>()
-            where T : ImagesClient
-            => new()
-            {
-                EndPoint = EndPoint,
-                AllowInlineData = AllowInlineData,
-                CacheCapabilities = CacheCapabilities,
-                HttpClient = HttpClient
-            };
-    }
-
-    public class ImagesClientConfiguration<T> : ImagesClientConfiguration
+    internal ImagesClientConfiguration<T> AsTyped<T>()
         where T : ImagesClient
-    { }
+        => new()
+        {
+            EndPoint = EndPoint,
+            AllowInlineData = AllowInlineData,
+            CacheCapabilities = CacheCapabilities,
+            HttpClient = HttpClient
+        };
 }
+
+public class ImagesClientConfiguration<T> : ImagesClientConfiguration
+    where T : ImagesClient
+{ }

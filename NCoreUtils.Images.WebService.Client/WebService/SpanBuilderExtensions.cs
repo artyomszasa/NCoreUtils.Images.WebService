@@ -95,7 +95,18 @@ namespace NCoreUtils.Images.WebService
                 {
                     builder.Append(';');
                 }
-                builder.Append(filters[i]);
+                switch (filters[i])
+                {
+                    case Blur blur:
+                        builder.Append(blur, Blur.Emplacer);
+                        break;
+                    case WaterMark waterMark:
+                        builder.Append(waterMark, WaterMark.Emplacer);
+                        break;
+                    case var filter:
+                        builder.Append(filter.ToString() ?? string.Empty);
+                        break;
+                }
             }
             return ref builder;
         }

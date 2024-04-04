@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 #if EnableGoogleFluentdLogging
 using NCoreUtils.Logging;
 #endif
@@ -41,9 +42,7 @@ namespace NCoreUtils.Images.WebService
             CreateHostBuilder(args).Build().Run();
         }
 
-#pragma warning disable IDE0060
         public static IHostBuilder CreateHostBuilder(string[] args)
-#pragma warning restore IDE0060
         {
             var configuration = LoadConfiguration();
             return new HostBuilder()

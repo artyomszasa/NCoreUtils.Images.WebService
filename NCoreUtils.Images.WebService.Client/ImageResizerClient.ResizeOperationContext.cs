@@ -1,34 +1,33 @@
 using System.Net.Http.Headers;
 using NCoreUtils.IO;
 
-namespace NCoreUtils.Images
+namespace NCoreUtils.Images;
+
+public partial class ImageResizerClient
 {
-    public partial class ImageResizerClient
+    protected sealed class ResizeOperationContext
     {
-        protected sealed class ResizeOperationContext
+        static readonly MediaTypeHeaderValue _binary = MediaTypeHeaderValue.Parse("application/octet-stream");
+
+        static readonly MediaTypeHeaderValue _json = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+
+        public static ResizeOperationContext Inline(IStreamProducer producer, IWritableResource destination)
+            => new(_binary, producer, destination);
+
+        public static ResizeOperationContext Json(IStreamProducer producer, IWritableResource? destination = default)
+            => new(_json, producer, destination);
+
+        public MediaTypeHeaderValue ContentType { get; }
+
+        public IStreamProducer Producer { get; }
+
+        public IWritableResource? Destination { get; }
+
+        ResizeOperationContext(MediaTypeHeaderValue contentType, IStreamProducer producer, IWritableResource? destination)
         {
-            static readonly MediaTypeHeaderValue _binary = MediaTypeHeaderValue.Parse("application/octet-stream");
-
-            static readonly MediaTypeHeaderValue _json = MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-
-            public static ResizeOperationContext Inline(IStreamProducer producer, IWritableResource destination)
-                => new(_binary, producer, destination);
-
-            public static ResizeOperationContext Json(IStreamProducer producer, IWritableResource? destination = default)
-                => new(_json, producer, destination);
-
-            public MediaTypeHeaderValue ContentType { get; }
-
-            public IStreamProducer Producer { get; }
-
-            public IWritableResource? Destination { get; }
-
-            ResizeOperationContext(MediaTypeHeaderValue contentType, IStreamProducer producer, IWritableResource? destination)
-            {
-                ContentType = contentType;
-                Producer = producer;
-                Destination = destination;
-            }
+            ContentType = contentType;
+            Producer = producer;
+            Destination = destination;
         }
     }
 }
