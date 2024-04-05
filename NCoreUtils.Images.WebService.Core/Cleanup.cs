@@ -49,7 +49,7 @@ namespace NCoreUtils.Images.WebService
             logger ??= new DummyLogger();
             if (!Directory.Exists(path))
             {
-                logger.LogWarning("Specified directory does not exist: {Path}", path);
+                logger.LogDirectoryNotExist(path);
                 return;
             }
             var now = DateTimeOffset.Now;
@@ -73,11 +73,11 @@ namespace NCoreUtils.Images.WebService
                 try
                 {
                     File.Delete(subpath);
-                    logger.LogInformation("Succesfully removed {Path} as part of cleanup.", subpath);
+                    logger.LogCleanupSuccess(subpath);
                 }
                 catch (Exception exn)
                 {
-                    logger.LogWarning(exn, "Failed to remove {Path} as part of cleanup.", subpath);
+                    logger.LogFailedToRemove(exn, subpath);
                 }
             }
         }

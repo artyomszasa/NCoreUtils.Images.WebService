@@ -82,7 +82,7 @@ public partial class ImageResizerClient(
             if (Configuration.AllowInlineData)
             {
                 // remote server does not support json-serialized images but the inline data is enabled --> proceed
-                Logger.LogWarning("Source image supports json serialization but remote server does not thus inline data will be used.");
+                Logger.LogImageJsonSerializationNotSupported();
                 return ResizeOperationContext.Inline(source.CreateProducer(), destination);
             }
             // remote server does not support json-serialized images and the inline data is disabled --> throw exception
@@ -97,7 +97,7 @@ public partial class ImageResizerClient(
         {
             if (Configuration.AllowInlineData)
             {
-                Logger.LogWarning("Json serializable destination is ignored as source is not json serializable.");
+                Logger.LogDestinationSerializationWarning();
             }
             else
             {
@@ -116,10 +116,10 @@ public partial class ImageResizerClient(
     {
         cancellationToken.ThrowIfCancellationRequested();
         using var scope = Logger.BeginScope(Guid.NewGuid());
-        Logger.LogDebug("Resize operation starting.");
+        Logger.LogResizeOperationStarting();
         var uri = new UriBuilder(endpoint) { Query = queryString }.Uri;
         var context = await GetOperationContextAsync(source, destination, endpoint, cancellationToken).ConfigureAwait(false);
-        Logger.LogDebug("Computed context for resize operation ({ContentType}).", context.ContentType);
+        Logger.LogResizeContextComputed(context.ContentType);
         try
         {
             IStreamConsumer consumer;
@@ -140,16 +140,16 @@ public partial class ImageResizerClient(
                 var outputMime = "application/octet-stream";
                 var finalConsumer = StreamConsumer.Delay(_ =>
                 {
-                    Logger.LogDebug("Creating consumer for resize operation");
+                    Logger.LogCreatingConsumer();
                     return new ValueTask<IStreamConsumer>(context.Destination.CreateConsumer(new ResourceInfo(outputMime)));
                 });
                 consumer = finalConsumer.Chain(StreamTransformation.Create(async (input, output, cancellationToken) =>
                 {
-                    Logger.LogDebug("Sending resize request.");
+                    Logger.LogSendingResizeRequest();
                     using var request = new HttpRequestMessage(HttpMethod.Post, uri) { Content = new TypedStreamContent(input, context.ContentType) };
                     using var client = CreateHttpClient();
                     using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    Logger.LogDebug("Received response of the resize request.");
+                    Logger.LogReceivedResizeResponse();
                     await CheckAsync(response, cancellationToken).ConfigureAwait(false);
                     outputMime = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
                     await using var stream =
@@ -160,12 +160,12 @@ public partial class ImageResizerClient(
 #endif
                         .ConfigureAwait(false);
                     await stream.CopyToAsync(output, 16 * 1024, cancellationToken).ConfigureAwait(false);
-                    Logger.LogDebug("Done processing response of the resize request.");
+                    Logger.LogResizeResponseProcessed();
                 }));
             }
-            Logger.LogDebug("Initializing resize operation.");
+            Logger.LogResizeOperationInit();
             await context.Producer.ConsumeAsync(consumer, cancellationToken).ConfigureAwait(false);
-            Logger.LogDebug("Resize operation completed.");
+            Logger.LogResizeOperationCompleted();
         }
         catch (Exception exn) when (exn is not ImageException)
         {
@@ -173,7 +173,7 @@ public partial class ImageResizerClient(
             {
                 if (IsBrokenPipe(socketExn) && source.Reusable)
                 {
-                    Logger.LogWarning(exn, "Failed to perform operation due to connection error, retrying...");
+                    Logger.LogConnectionErrorRetry(exn);
                     await InvokeResizeAsync(source, destination, queryString, endpoint, cancellationToken).ConfigureAwait(false);
                     return;
                 }

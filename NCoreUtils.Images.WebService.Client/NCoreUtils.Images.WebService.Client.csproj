@@ -41,4 +41,10 @@
     <PackageReference Include="NCoreUtils.IO" Version="8.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
+    <Compile Remove="LoggingExtensions.Legacy.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+    <Compile Remove="LoggingExtensions.cs" />
+  </ItemGroup>
 </Project>

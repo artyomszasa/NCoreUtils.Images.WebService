@@ -174,13 +174,13 @@ public abstract class ImagesClient(
                     .ConfigureAwait(false)
                     ?? []
             );
-            Logger.LogDebug("Remote server supports following extensions: {Capabilities}.", string.Join(", ", capabilities));
+            Logger.LogRemoteServerSupports(capabilities);
             _cachedCapabilities = capabilities;
             return capabilities;
         }
         catch (Exception exn)
         {
-            Logger.LogWarning(exn, "Querying extensions from {Endpoint} failed ({Message}), assuming no extensions supported.", endpoint, exn.Message);
+            Logger.LogQueryingExtensionsFailed(endpoint, exn.Message);
             return [];
         }
     }
