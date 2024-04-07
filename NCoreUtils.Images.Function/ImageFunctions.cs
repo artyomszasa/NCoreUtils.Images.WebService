@@ -40,7 +40,7 @@ namespace NCoreUtils.Images
             }
             catch (Exception exn)
             {
-                log.LogFailedProcess(exn);
+                log.LogFailedToProcessRequest(exn);
                 return new JsonErrorResult(exn);
             }
             return new OkNoCacheResult();
@@ -62,7 +62,7 @@ namespace NCoreUtils.Images
             }
             catch (Exception exn)
             {
-                log.LogFailedProcess(exn);
+                log.LogFailedToProcessRequest(exn);
                 return new JsonErrorResult(exn);
             }
         }

@@ -46,7 +46,7 @@ public partial class ImageAnalyzerClient(
             if (Configuration.AllowInlineData)
             {
                 // remote server does not support json-serialized images but the inline data is enabled --> proceed
-                Logger.LogImageJsonSerializationNotSupported();
+                Logger.LogInlineDataWillBeUsedDueToServerSettings();
                 return AnalyzeOperationContext.Inline(source.CreateProducer());
             }
             // remote server does not support json-serialized images and the inline data is disabled --> throw exception
@@ -96,7 +96,7 @@ public partial class ImageAnalyzerClient(
                         .ConfigureAwait(false);
                     Logger.LogAnalyzeResponseProcessed();
                 }));
-            Logger.LogAnalyzeOperationInit();
+            Logger.LogInitializingAnalyzeOperation();
             var result = await context.Producer.ConsumeAsync(consumer, cancellationToken).ConfigureAwait(false);
             Logger.LogAnalyzeOperationCompleted();
             return result ?? new ImageInfo(default, default, default, default, new Dictionary<string, string>(), new Dictionary<string, string>());

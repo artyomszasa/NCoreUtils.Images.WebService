@@ -24,12 +24,12 @@ internal static partial class LoggingExtensions
     public static partial void LogQueryingExtensionsFailed(this ILogger logger, string endpoint, string message);
 
     [LoggerMessage(
-        EventId = ImageJsonSerializationNotSupported,
-        EventName = nameof(ImageJsonSerializationNotSupported),
+        EventId = InlineDataWillBeUsedDueToServerSettings,
+        EventName = nameof(InlineDataWillBeUsedDueToServerSettings),
         Level = LogLevel.Warning,
         Message = "Source image supports json serialization but remote server does not thus inline data will be used."
     )]
-    public static partial void LogImageJsonSerializationNotSupported(this ILogger logger);
+    public static partial void LogInlineDataWillBeUsedDueToServerSettings(this ILogger logger);
 
     [LoggerMessage(
         EventId = AnalyzeOperationStarting,
@@ -72,12 +72,12 @@ internal static partial class LoggingExtensions
     public static partial void LogAnalyzeResponseProcessed(this ILogger logger);
 
     [LoggerMessage(
-        EventId = AnalyzeOperationInit,
-        EventName = nameof(AnalyzeOperationInit),
+        EventId = InitializingAnalyzeOperation,
+        EventName = nameof(InitializingAnalyzeOperation),
         Level = LogLevel.Debug,
         Message = "Initializing analyze operation."
     )]
-    public static partial void LogAnalyzeOperationInit(this ILogger logger);
+    public static partial void LogInitializingAnalyzeOperation(this ILogger logger);
 
     [LoggerMessage(
         EventId = AnalyzeOperationCompleted,
@@ -96,12 +96,12 @@ internal static partial class LoggingExtensions
     public static partial void LogConnectionErrorRetry(this ILogger logger, Exception exn);
 
     [LoggerMessage(
-        EventId = DestinationSerializationWarning,
-        EventName = nameof(DestinationSerializationWarning),
+        EventId = SourceIsNotSerializable,
+        EventName = nameof(SourceIsNotSerializable),
         Level = LogLevel.Warning,
         Message = "Json serializable destination is ignored as source is not json serializable."
     )]
-    public static partial void LogDestinationSerializationWarning(this ILogger logger);
+    public static partial void LogSourceIsNotSerializable(this ILogger logger);
 
     [LoggerMessage(
         EventId = ResizeOperationStarting,
@@ -120,12 +120,12 @@ internal static partial class LoggingExtensions
     public static partial void LogResizeContextComputed(this ILogger logger, object? contentType);
 
     [LoggerMessage(
-        EventId = CreatingConsumer,
-        EventName = nameof(CreatingConsumer),
+        EventId = CreatingResizerConsumer,
+        EventName = nameof(CreatingResizerConsumer),
         Level = LogLevel.Debug,
         Message = "Creating consumer for resize operation"
     )]
-    public static partial void LogCreatingConsumer(this ILogger logger);
+    public static partial void LogCreatingResizerConsumer(this ILogger logger);
 
     [LoggerMessage(
         EventId = SendingResizeRequest,
@@ -152,12 +152,12 @@ internal static partial class LoggingExtensions
     public static partial void LogResizeResponseProcessed(this ILogger logger);
 
     [LoggerMessage(
-        EventId = ResizeOperationInit,
-        EventName = nameof(ResizeOperationInit),
+        EventId = InitializingResizeOperation,
+        EventName = nameof(InitializingResizeOperation),
         Level = LogLevel.Debug,
         Message = "Initializing resize operation."
     )]
-    public static partial void LogResizeOperationInit(this ILogger logger);
+    public static partial void LogInitializingResizeOperation(this ILogger logger);
 
     [LoggerMessage(
         EventId = ResizeOperationCompleted,

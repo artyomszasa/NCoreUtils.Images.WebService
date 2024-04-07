@@ -82,7 +82,7 @@ public partial class ImageResizerClient(
             if (Configuration.AllowInlineData)
             {
                 // remote server does not support json-serialized images but the inline data is enabled --> proceed
-                Logger.LogImageJsonSerializationNotSupported();
+                Logger.LogInlineDataWillBeUsedDueToServerSettings();
                 return ResizeOperationContext.Inline(source.CreateProducer(), destination);
             }
             // remote server does not support json-serialized images and the inline data is disabled --> throw exception
@@ -97,7 +97,7 @@ public partial class ImageResizerClient(
         {
             if (Configuration.AllowInlineData)
             {
-                Logger.LogDestinationSerializationWarning();
+                Logger.LogSourceIsNotSerializable();
             }
             else
             {
@@ -140,7 +140,7 @@ public partial class ImageResizerClient(
                 var outputMime = "application/octet-stream";
                 var finalConsumer = StreamConsumer.Delay(_ =>
                 {
-                    Logger.LogCreatingConsumer();
+                    Logger.LogCreatingResizerConsumer();
                     return new ValueTask<IStreamConsumer>(context.Destination.CreateConsumer(new ResourceInfo(outputMime)));
                 });
                 consumer = finalConsumer.Chain(StreamTransformation.Create(async (input, output, cancellationToken) =>
@@ -163,7 +163,7 @@ public partial class ImageResizerClient(
                     Logger.LogResizeResponseProcessed();
                 }));
             }
-            Logger.LogResizeOperationInit();
+            Logger.LogInitializingResizeOperation();
             await context.Producer.ConsumeAsync(consumer, cancellationToken).ConfigureAwait(false);
             Logger.LogResizeOperationCompleted();
         }

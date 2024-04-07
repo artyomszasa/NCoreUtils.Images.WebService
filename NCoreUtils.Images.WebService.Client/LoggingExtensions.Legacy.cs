@@ -22,10 +22,10 @@ internal static partial class LoggingExtensions
             args: [endpoint, message]
         );
 
-    public static void LogImageJsonSerializationNotSupported(this ILogger logger)
+    public static void LogInlineDataWillBeUsedDueToServerSettings(this ILogger logger)
         => logger.Log(
             logLevel: LogLevel.Warning,
-            eventId: new EventId(ImageJsonSerializationNotSupported, nameof(ImageJsonSerializationNotSupported)),
+            eventId: new EventId(InlineDataWillBeUsedDueToServerSettings, nameof(InlineDataWillBeUsedDueToServerSettings)),
             message: "Source image supports json serialization but remote server does not thus inline data will be used."
         );
 
@@ -65,10 +65,10 @@ internal static partial class LoggingExtensions
             message: "Done processing response of the analyze request."
         );
 
-    public static void LogAnalyzeOperationInit(this ILogger logger)
+    public static void LogInitializingAnalyzeOperation(this ILogger logger)
         => logger.Log(
             logLevel: LogLevel.Debug,
-            eventId: new EventId(AnalyzeOperationInit, nameof(AnalyzeOperationInit)),
+            eventId: new EventId(InitializingAnalyzeOperation, nameof(InitializingAnalyzeOperation)),
             message: "Initializing analyze operation."
         );
 
@@ -87,10 +87,10 @@ internal static partial class LoggingExtensions
             exception: exn
         );
 
-    public static void LogDestinationSerializationWarning(this ILogger logger)
+    public static void LogSourceIsNotSerializable(this ILogger logger)
         => logger.Log(
             logLevel: LogLevel.Warning,
-            eventId: new EventId(DestinationSerializationWarning, nameof(DestinationSerializationWarning)),
+            eventId: new EventId(SourceIsNotSerializable, nameof(SourceIsNotSerializable)),
             message: "Json serializable destination is ignored as source is not json serializable."
         );
 
@@ -109,10 +109,10 @@ internal static partial class LoggingExtensions
             args: [contentType]
         );
 
-    public static void LogCreatingConsumer(this ILogger logger)
+    public static void LogCreatingResizerConsumer(this ILogger logger)
         => logger.Log(
             logLevel: LogLevel.Debug,
-            eventId: new EventId(CreatingConsumer, nameof(CreatingConsumer)),
+            eventId: new EventId(CreatingResizerConsumer, nameof(CreatingResizerConsumer)),
             message: "Creating consumer for resize operation."
         );
 
@@ -137,10 +137,10 @@ internal static partial class LoggingExtensions
             message: "Done processing response of the resize request."
         );
 
-    public static void LogResizeOperationInit(this ILogger logger)
+    public static void LogInitializingResizeOperation(this ILogger logger)
         => logger.Log(
             logLevel: LogLevel.Debug,
-            eventId: new EventId(ResizeOperationInit, nameof(ResizeOperationInit)),
+            eventId: new EventId(InitializingResizeOperation, nameof(InitializingResizeOperation)),
             message: "Initializing resize operation."
         );
 

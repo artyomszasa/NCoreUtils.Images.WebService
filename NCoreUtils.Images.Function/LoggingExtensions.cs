@@ -6,10 +6,10 @@ namespace NCoreUtils.Images;
 internal static partial class LoggingExtensions
 {
     [LoggerMessage(
-        EventId = FailedProcess,
-        EventName = nameof(FailedProcess),
+        EventId = FailedToProcessRequest,
+        EventName = nameof(FailedToProcessRequest),
         Level = LogLevel.Information,
         Message = "Failed to process request."
     )]
-    public static partial void LogFailedProcess(this ILogger logger, Exception exn);
+    public static partial void LogFailedToProcessRequest(this ILogger logger, Exception exn);
 }

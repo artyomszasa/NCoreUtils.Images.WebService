@@ -2,5 +2,5 @@ namespace NCoreUtils.Images;
 
 internal static partial class LoggingExtensions
 {
-    public const int FailedProcess = 11300;
+    public const int FailedToProcessRequest = 11300;
 }
