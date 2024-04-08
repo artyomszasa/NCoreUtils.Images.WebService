@@ -33,14 +33,14 @@ internal static partial class LoggingExtensions
         => logger.Log(
             logLevel: LogLevel.Debug,
             eventId: new EventId(AnalyzeOperationStarting, nameof(AnalyzeOperationStarting)),
-            message: "Source image supports json serialization but remote server does not thus inline data will be used."
+            message: "Analyze operation starting."
         );
 
     public static void LogComputedContextForAnalyzeOperation(this ILogger logger, object? contentType)
         => logger.Log(
             logLevel: LogLevel.Debug,
             eventId: new EventId(ComputedContextForAnalyzeOperation, nameof(ComputedContextForAnalyzeOperation)),
-            message: "Source image supports json serialization but remote server does not thus inline data will be used.",
+            message: "Computed context for analyze operation ({ContentType}).",
             args: [contentType]
         );
 

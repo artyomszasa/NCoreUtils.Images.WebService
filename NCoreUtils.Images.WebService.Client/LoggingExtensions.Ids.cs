@@ -8,7 +8,7 @@ internal static partial class LoggingExtensions
 
     public const int QueryingExtensionsFailed = 11401;
 
-    public const int InlineDataWillBeUsedDueToServerSettings = 11402; //2
+    public const int InlineDataWillBeUsedDueToServerSettings = 11402; 
 
     public const int AnalyzeOperationStarting = 11403;
 
