@@ -40,7 +40,7 @@ namespace NCoreUtils.Images
                 {
                     throw;
                 }
-                _logger.LogWarning(exn, "Failes to process request.");
+                _logger.LogFailedToProcessRequest(exn);
                 ImageErrorData data = exn is ImageException e ? GetErrorData(e) : new ImageErrorData(ErrorCodes.GenericError, exn.Message);
                 response.StatusCode = 400;
                 response.ContentType = "application/json; charset=utf-8";

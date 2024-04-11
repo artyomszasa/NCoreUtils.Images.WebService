@@ -46,7 +46,7 @@ public partial class ImageAnalyzerClient(
             if (Configuration.AllowInlineData)
             {
                 // remote server does not support json-serialized images but the inline data is enabled --> proceed
-                Logger.LogWarning("Source image supports json serialization but remote server does not thus inline data will be used.");
+                Logger.LogInlineDataWillBeUsedDueToServerSettings();
                 return AnalyzeOperationContext.Inline(source.CreateProducer());
             }
             // remote server does not support json-serialized images and the inline data is disabled --> throw exception
@@ -67,10 +67,10 @@ public partial class ImageAnalyzerClient(
     {
         cancellationToken.ThrowIfCancellationRequested();
         using var scope = Logger.BeginScope(Guid.NewGuid());
-        Logger.LogDebug("Analyze operation starting.");
+        Logger.LogAnalyzeOperationStarting();
         var uri = new UriBuilder(endpoint).AppendPathSegment(Routes.Info).Uri;
         var context = await GetOperationContextAsync(source, endpoint, cancellationToken);
-        Logger.LogDebug("Computed context for analyze operation ({ContentType}).", context.ContentType);
+        Logger.LogComputedContextForAnalyzeOperation(context.ContentType);
         try
         {
             var consumer = StreamConsumer
@@ -79,11 +79,11 @@ public partial class ImageAnalyzerClient(
                 })
                 .Chain(StreamTransformation.Create(async (input, output, cancellationToken) =>
                 {
-                    Logger.LogDebug("Sending analyze request.");
+                    Logger.LogSendingAnalyzeRequest();
                     using var request = new HttpRequestMessage(HttpMethod.Post, uri) { Content = new TypedStreamContent(input, context.ContentType) };
                     using var client = CreateHttpClient();
                     using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-                    Logger.LogDebug("Received response of the analyze request.");
+                    Logger.LogReceivedAnalyzeResponse();
                     await CheckAsync(response, cancellationToken);
                     await using var stream =
 #if NETSTANDARD2_1
@@ -94,11 +94,11 @@ public partial class ImageAnalyzerClient(
                         .ConfigureAwait(false);
                     await stream.CopyToAsync(output, 16 * 1024, cancellationToken)
                         .ConfigureAwait(false);
-                    Logger.LogDebug("Done processing response of the analyze request.");
+                    Logger.LogAnalyzeResponseProcessed();
                 }));
-            Logger.LogDebug("Initializing analyze operation.");
+            Logger.LogInitializingAnalyzeOperation();
             var result = await context.Producer.ConsumeAsync(consumer, cancellationToken).ConfigureAwait(false);
-            Logger.LogDebug("Analyze operation completed.");
+            Logger.LogAnalyzeOperationCompleted();
             return result ?? new ImageInfo(default, default, default, default, new Dictionary<string, string>(), new Dictionary<string, string>());
         }
         catch (Exception exn) when (exn is not ImageException)
@@ -107,7 +107,7 @@ public partial class ImageAnalyzerClient(
             {
                 if (IsBrokenPipe(socketExn) && source.Reusable)
                 {
-                    Logger.LogWarning(exn, "Failed to perform operation due to connection error, retrying...");
+                    Logger.LogConnectionErrorRetry(exn);
                     return await InvokeGetImageInfoAsync(source, endpoint, cancellationToken);
                 }
                 throw new RemoteImageConnectivityException(endpoint, socketExn.SocketErrorCode, "Network related error has occured while performing operation.", exn);
