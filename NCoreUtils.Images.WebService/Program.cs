@@ -33,6 +33,7 @@ namespace NCoreUtils.Images.WebService
 
         private static IConfigurationRoot LoadConfiguration()
             => new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
                 .AddEnvironmentVariables("IMAGES_")
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                 .AddJsonFile("secrets/appsettings.json", optional: true, reloadOnChange: false)

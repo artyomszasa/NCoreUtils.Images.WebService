@@ -23,5 +23,5 @@ WORKDIR /app
 ENV DOTNET_ENVIRONMENT=Production \
     ASPNETCORE_ENVIRONMENT=Production
 COPY --from=build-env /app/out ./
-COPY ./run/appsettings.default.json /app/secrets/appsettings.json
+# COPY ./run/appsettings.default.json /app/secrets/appsettings.json
 ENTRYPOINT ["./NCoreUtils.Images.WebService"]
