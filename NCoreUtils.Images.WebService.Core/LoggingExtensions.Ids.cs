@@ -9,4 +9,8 @@ internal static partial class LoggingExtensions
     public const int FailedToRemove = 11502;
 
     public const int FailedToProcessRequest = 11503;
+
+    public const int SuccessfullyPerformedResizeOperation = 11504;
+
+    public const int SuccessfullyPerformedAnalyzeOperation = 11505;
 }

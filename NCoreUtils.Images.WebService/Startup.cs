@@ -6,10 +6,8 @@ using NCoreUtils.Resources;
 
 namespace NCoreUtils.Images.WebService
 {
-    public class Startup : CoreStartup
+    public class Startup(IConfiguration configuration, IWebHostEnvironment env) : CoreStartup(configuration, env)
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment env) : base(configuration, env) { }
-
         protected override void ConfigureResourceFactories(OptionsBuilder<CompositeResourceFactoryConfiguration> b)
         {
             b

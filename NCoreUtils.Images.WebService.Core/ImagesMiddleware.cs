@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NCoreUtils.Images.WebService;
 
 namespace NCoreUtils.Images
@@ -44,7 +45,8 @@ namespace NCoreUtils.Images
             {
                 var resourceFactory = context.RequestServices.GetRequiredService<IResourceFactory>();
                 var resizer = context.RequestServices.GetRequiredService<IImageResizer>();
-                return CoreFunctions.InvokeResize(request, resourceFactory, resizer, context.RequestAborted);
+                var logger = context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("NCoreUtils.Images.ImageResizer");
+                return CoreFunctions.InvokeResize(request, resourceFactory, resizer, logger, context.RequestAborted);
             }
             if (request.Path == _capabilitiesEndpoint && Eqi(request.Method, "GET"))
             {
@@ -54,7 +56,8 @@ namespace NCoreUtils.Images
             {
                 var resourceFactory = context.RequestServices.GetRequiredService<IResourceFactory>();
                 var analyzer = context.RequestServices.GetRequiredService<IImageAnalyzer>();
-                return CoreFunctions.InvokeAnalyze(request, context.Response, resourceFactory, analyzer, context.RequestAborted);
+                var logger = context.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("NCoreUtils.Images.ImageAnalyzer");
+                return CoreFunctions.InvokeAnalyze(request, context.Response, resourceFactory, analyzer, logger, context.RequestAborted);
             }
             return _next(context);
         }

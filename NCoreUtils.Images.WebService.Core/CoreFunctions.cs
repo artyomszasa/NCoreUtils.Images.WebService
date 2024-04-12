@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using NCoreUtils.Images.WebService;
 
 namespace NCoreUtils.Images;
@@ -109,26 +110,46 @@ public static class CoreFunctions
         await response.BodyWriter.CompleteAsync().ConfigureAwait(false);
     }
 
-    public static async Task InvokeResize(HttpRequest request, IResourceFactory resourceFactory, IImageResizer resizer, CancellationToken cancellationToken)
+    public static async Task InvokeResize(
+        HttpRequest request,
+        IResourceFactory resourceFactory,
+        IImageResizer resizer,
+        ILogger logger,
+        CancellationToken cancellationToken)
     {
         var sourceAndDestination = await ParseSourceAndDestination(request, cancellationToken).ConfigureAwait(false);
         var (source, destination) = ResolveSourceAndDestination(resourceFactory, sourceAndDestination);
-        await resizer.ResizeAsync(source, destination, ReadResizeOptions(resourceFactory, request.Query), cancellationToken).ConfigureAwait(false);
+        var options = ReadResizeOptions(resourceFactory, request.Query);
+        await resizer.ResizeAsync(source, destination, options, cancellationToken).ConfigureAwait(false);
+        logger.LogSuccessfullyPerformedResizeOperation(source, destination, options);
     }
 
-    public static async ValueTask<ImageInfo> InvokeAnalyze(HttpRequest request, IResourceFactory resourceFactory, IImageAnalyzer analyzer, CancellationToken cancellationToken)
+    public static async ValueTask<ImageInfo> InvokeAnalyze(
+        HttpRequest request,
+        IResourceFactory resourceFactory,
+        IImageAnalyzer analyzer,
+        ILogger logger,
+        CancellationToken cancellationToken)
     {
         var sourceAndDestination = await ParseSourceAndDestination(request, cancellationToken).ConfigureAwait(false);
         if (!resourceFactory.TryCreateReadable(sourceAndDestination.Source!, out var source))
         {
             NotSupportedUri(sourceAndDestination.Source);
         }
-        return await analyzer.AnalyzeAsync(source, cancellationToken).ConfigureAwait(false);
+        var res = await analyzer.AnalyzeAsync(source, cancellationToken).ConfigureAwait(false);
+        logger.LogSuccessfullyPerformedAnalyzeOperation(source);
+        return res;
     }
 
-    public static async Task InvokeAnalyze(HttpRequest request, HttpResponse response, IResourceFactory resourceFactory, IImageAnalyzer analyzer, CancellationToken cancellationToken)
+    public static async Task InvokeAnalyze(
+        HttpRequest request,
+        HttpResponse response,
+        IResourceFactory resourceFactory,
+        IImageAnalyzer analyzer,
+        ILogger logger,
+        CancellationToken cancellationToken)
     {
-        var info = await InvokeAnalyze(request, resourceFactory, analyzer, cancellationToken).ConfigureAwait(false);
+        var info = await InvokeAnalyze(request, resourceFactory, analyzer, logger, cancellationToken).ConfigureAwait(false);
         response.ContentType = "application/json; charset=utf-8";
         await JsonSerializer.SerializeAsync(response.Body, info, ImageInfoJsonContext.Default.ImageInfo, cancellationToken)
             .ConfigureAwait(false);
