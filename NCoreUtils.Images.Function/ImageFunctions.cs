@@ -36,7 +36,7 @@ namespace NCoreUtils.Images
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, request.HttpContext.RequestAborted);
             try
             {
-                await CoreFunctions.InvokeResize(request, ResourceFactory, ImageResizer, cancellationSource.Token);
+                await CoreFunctions.InvokeResize(request, ResourceFactory, ImageResizer, log, cancellationSource.Token);
             }
             catch (Exception exn)
             {
@@ -57,7 +57,7 @@ namespace NCoreUtils.Images
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, request.HttpContext.RequestAborted);
             try
             {
-                var res = await CoreFunctions.InvokeAnalyze(request, ResourceFactory, ImageAnalyzer, cancellationSource.Token);
+                var res = await CoreFunctions.InvokeAnalyze(request, ResourceFactory, ImageAnalyzer, log, cancellationSource.Token);
                 return new JsonSerializedResult<ImageInfo>(res, ImageInfoJsonContext.Default.ImageInfo);
             }
             catch (Exception exn)
