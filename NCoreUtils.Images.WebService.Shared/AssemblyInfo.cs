@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("NCoreUtils.AzImages")]
 [assembly: InternalsVisibleTo("NCoreUtils.Images.Function")]
 [assembly: InternalsVisibleTo("NCoreUtils.Images.WebService")]
 [assembly: InternalsVisibleTo("NCoreUtils.Images.WebService.Core")]

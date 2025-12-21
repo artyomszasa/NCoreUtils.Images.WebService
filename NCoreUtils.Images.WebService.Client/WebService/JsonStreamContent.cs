@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 
 namespace NCoreUtils.Images.WebService;
 
-class JsonStreamContent(Stream stream) : TypedStreamContent(stream, _applicationJson)
+internal class JsonStreamContent(Stream stream) : TypedStreamContent(stream, ApplicationJson)
 {
-    static readonly MediaTypeHeaderValue _applicationJson = MediaTypeHeaderValue.Parse("application/json");
+    public static MediaTypeHeaderValue ApplicationJson { get; } = MediaTypeHeaderValue.Parse("application/json");
 }
