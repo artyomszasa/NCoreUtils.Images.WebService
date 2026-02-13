@@ -28,7 +28,7 @@ namespace NCoreUtils.Images
             {
                 null => "/",
                 "" => "/",
-                var pre => "/" + pre.Trim('/')
+                var pre => $"/{pre.Trim('/')}/"
             };
             _resizeEndpoint = prefix;
             _capabilitiesEndpoint = prefix + Routes.Capabilities;

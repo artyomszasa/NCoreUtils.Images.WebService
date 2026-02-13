@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <ServerGarbageCollection>false</ServerGarbageCollection>
@@ -32,16 +32,16 @@
     <ProjectReference Include="..\NCoreUtils.Images.WebService.Core\NCoreUtils.Images.WebService.Core.csproj" />
   </ItemGroup>
   <ItemGroup Condition=" '$(EnableGoogleCloudStorage)' == 'true' ">
-    <PackageReference Include="NCoreUtils.Resources.Google.Cloud.Storage" Version="8.0.0" />
-    <PackageReference Include="NCoreUtils.Extensions.Google.Cloud.Storage.ServiceAccount" Version="8.0.0-rc00" />
+    <PackageReference Include="NCoreUtils.Resources.Google.Cloud.Storage" Version="10.0.0" />
+    <PackageReference Include="NCoreUtils.Extensions.Google.Cloud.Storage.ServiceAccount" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NCoreUtils.Extensions.Memory" Version="8.0.0" />
-    <PackageReference Include="NCoreUtils.Resources.Azure.Blob" Version="8.0.0" Condition=" '$(EnableAzureBlobStorage)' == 'true' " />
-    <PackageReference Include="NCoreUtils.Resources.FileSystem" Version="8.0.0" Condition=" '$(EnableLocalStorage)' == 'true' " />
+    <PackageReference Include="NCoreUtils.Extensions.Memory" Version="10.0.0" />
+    <PackageReference Include="NCoreUtils.Resources.Azure.Blob" Version="10.0.0" Condition=" '$(EnableAzureBlobStorage)' == 'true' " />
+    <PackageReference Include="NCoreUtils.Resources.FileSystem" Version="10.0.0" Condition=" '$(EnableLocalStorage)' == 'true' " />
   </ItemGroup>
   <ItemGroup Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">
-    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="8.0.0" />
-    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="8.0.0" />
+    <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="10.0.0-rc00" />
+    <PackageReference Include="NCoreUtils.Logging.Google.Fluentd" Version="10.0.0-rc00" />
   </ItemGroup>
 </Project>

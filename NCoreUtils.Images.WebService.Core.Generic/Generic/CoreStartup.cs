@@ -38,7 +38,7 @@ public abstract class CoreStartup
                 throw new InvalidOperationException($"Invalid value for Images:{nameof(ImageResizerOptions.MemoryLimit)}: \"{rawMemoryLimit}\".");
             }
         }
-        foreach (var (key, value) in section.GetSection(nameof(ImageResizerOptions.Quality)).AsEnumerable())
+        foreach (var (key, value) in section.GetSection(nameof(ImageResizerOptions.Quality)).AsEnumerable(makePathsRelative: true))
         {
             if (value is not null)
             {
@@ -52,7 +52,7 @@ public abstract class CoreStartup
                 }
             }
         }
-        foreach (var (key, value) in section.GetSection(nameof(ImageResizerOptions.Optimize)).AsEnumerable())
+        foreach (var (key, value) in section.GetSection(nameof(ImageResizerOptions.Optimize)).AsEnumerable(makePathsRelative: true))
         {
             if (value is not null)
             {

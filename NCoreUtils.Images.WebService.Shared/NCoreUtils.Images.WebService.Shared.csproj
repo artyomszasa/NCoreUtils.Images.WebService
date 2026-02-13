@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0;net6.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>NCoreUtils.Images.WebService</RootNamespace>
     <!-- NuGet -->
     <PackageId>NCoreUtils.Images.WebService.Shared</PackageId>
@@ -34,8 +34,5 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NCoreUtils.Images.Abstractions" Version="$(ImagesNugetVersion)" />
-    <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 </Project>

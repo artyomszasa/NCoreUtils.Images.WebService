@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NCoreUtils.Resources.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="NCoreUtils.Resources.AspNetCore" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

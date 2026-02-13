@@ -60,6 +60,7 @@ public abstract class CoreStartup : Generic.CoreStartup
             // .UsePrePopulateLoggingContext()
             .UseMiddleware<ErrorMiddleware>()
             .UseMiddleware<ImagesMiddleware>()
+            .UseMiddleware<InspectionMiddleware>()
             .Run((context) =>
             {
                 context.Response.StatusCode = 404;
