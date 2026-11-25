@@ -11,4 +11,7 @@ internal static class ErrorSerialization
 
     public static Task SerializeImageErrorDataAsync(System.IO.Stream stream, ImageErrorData data, CancellationToken cancellationToken)
         => JsonSerializer.SerializeAsync(stream, data, ImageErrorSerializerContext.Default.ImageErrorData, cancellationToken);
+
+    public static string SerializeImageErrorData(ImageErrorData data)
+        => JsonSerializer.Serialize(data, ImageErrorSerializerContext.Default.ImageErrorData);
 }

@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.WebUtilities;
@@ -11,6 +12,38 @@ using NCoreUtils.Images;
 using NCoreUtils.Images.WebService;
 
 namespace NCoreUtils.AzImages;
+
+#pragma warning disable SYSLIB0051 // Type or member is obsolete
+#pragma warning disable CS0672 // Member overrides obsolete member
+
+[Serializable]
+public class ImageProcessingException : Exception
+{
+    public string? JsonData { get; }
+
+    protected ImageProcessingException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+        => JsonData = info.GetString(nameof(JsonData));
+
+    public ImageProcessingException() : base("Image processing failed.") { }
+
+    public ImageProcessingException(string message) : base(message) { }
+
+    public ImageProcessingException(string message, Exception innerException) : base(message, innerException) { }
+
+    public ImageProcessingException(string message, string jsonData)
+        : base(message)
+        => JsonData = jsonData;
+
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        base.GetObjectData(info, context);
+        info.AddValue(nameof(JsonData), JsonData);
+    }
+}
+
+#pragma warning restore CS0672 // Member overrides obsolete member
+#pragma warning restore SYSLIB0051 // Type or member is obsolete
 
 internal sealed class FakeRequest(string body, IReadOnlyDictionary<string, StringValues> query) : Images.Generic.IHttpRequest
 {
@@ -135,13 +168,24 @@ public class ImageFunctions(ILogger<ImageFunctions> logger, IResourceFactory res
     [Function(nameof(DoRunScheduledResize))]
     public async Task DoRunScheduledResize([ActivityTrigger] string serializedRequest, FunctionContext functionContext)
     {
-        var requestData = JsonSerializer.Deserialize(serializedRequest, SerializedRequestSerializerContext.Default.SerializedRequest)
-            ?? throw new InvalidOperationException("Could not deserialize request.");
-        var query = QueryHelpers.ParseQuery(requestData.Query);
-        var request = new FakeRequest(requestData.Body, query);
-        await Images.Generic.CoreFunctions
-            .InvokeResize(request, ResourceFactory, ImageResizer, Logger, functionContext.CancellationToken)
-            .ConfigureAwait(false);
+        try
+        {
+            var requestData = JsonSerializer.Deserialize(serializedRequest, SerializedRequestSerializerContext.Default.SerializedRequest)
+                ?? throw new InvalidOperationException("Could not deserialize request.");
+            var query = QueryHelpers.ParseQuery(requestData.Query);
+            var request = new FakeRequest(requestData.Body, query);
+            await Images.Generic.CoreFunctions
+                .InvokeResize(request, ResourceFactory, ImageResizer, Logger, functionContext.CancellationToken)
+                .ConfigureAwait(false);
+        }
+        catch (ImageException exn)
+        {
+            Logger.LogError(exn, "Image processing failed.");
+            throw new ImageProcessingException(
+                "Image processing failed.",
+                ErrorSerialization.SerializeImageErrorData(Images.Generic.ExceptionHelper.GetErrorData(exn))
+            );
+        }
     }
 
     [Function("ScheduleResize")]

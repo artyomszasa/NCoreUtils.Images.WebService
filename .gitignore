@@ -5,3 +5,5 @@
 
 NCoreUtils*/obj
 NCoreUtils*/bin
+
+*.csproj.lscache

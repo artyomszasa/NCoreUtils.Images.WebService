@@ -1,13 +1,13 @@
 <Project>
   <PropertyGroup>
-    <Version>10.0.0-rc00</Version>
+    <Version>10.0.0-rc02</Version>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
     <FxNugetVersion>6.0.0</FxNugetVersion>
     <Fx3NugetVersion>3.1.16</Fx3NugetVersion>
     <Fx8NugetVersion>8.0.0</Fx8NugetVersion>
-    <Fx10NugetVersion>8.0.0</Fx10NugetVersion>
-    <ImagesNugetVersion>10.0.0-rc00</ImagesNugetVersion>
+    <Fx10NugetVersion>10.0.0</Fx10NugetVersion>
+    <ImagesNugetVersion>10.0.0-rc02</ImagesNugetVersion>
     <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
   </PropertyGroup>
