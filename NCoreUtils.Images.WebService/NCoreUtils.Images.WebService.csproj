@@ -18,9 +18,12 @@
     <EnableGoogleCloudStorage Condition=" '$(EnableGoogleCloudStorage)' == '' ">true</EnableGoogleCloudStorage>
     <EnableAzureBlobStorage Condition=" '$(EnableAzureBlobStorage)' == '' ">true</EnableAzureBlobStorage>
     <EnableLocalStorage Condition=" '$(EnableLocalStorage)' == '' ">true</EnableLocalStorage>
+    <!-- r2://bucket/key resources through the JSON based S3 proxy (Cloudflare R2) -->
+    <EnableR2Storage Condition=" '$(EnableR2Storage)' == '' ">true</EnableR2Storage>
     <DefineConstants Condition=" '$(EnableGoogleCloudStorage)' == 'true' ">$(DefineConstants);EnableGoogleCloudStorage</DefineConstants>
     <DefineConstants Condition=" '$(EnableAzureBlobStorage)' == 'true' ">$(DefineConstants);EnableAzureBlobStorage</DefineConstants>
     <DefineConstants Condition=" '$(EnableLocalStorage)' == 'true' ">$(DefineConstants);EnableLocalStorage</DefineConstants>
+    <DefineConstants Condition=" '$(EnableR2Storage)' == 'true' ">$(DefineConstants);EnableR2Storage</DefineConstants>
     <DefineConstants Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">$(DefineConstants);EnableGoogleFluentdLogging</DefineConstants>
   </PropertyGroup>
   <!--
@@ -39,6 +42,7 @@
     <PackageReference Include="NCoreUtils.Extensions.Memory" Version="10.0.0" />
     <PackageReference Include="NCoreUtils.Resources.Azure.Blob" Version="10.0.0" Condition=" '$(EnableAzureBlobStorage)' == 'true' " />
     <PackageReference Include="NCoreUtils.Resources.FileSystem" Version="10.0.0" Condition=" '$(EnableLocalStorage)' == 'true' " />
+    <PackageReference Include="NCoreUtils.Resources.S3Proxy" Version="10.0.0" Condition=" '$(EnableR2Storage)' == 'true' " />
   </ItemGroup>
   <ItemGroup Condition=" '$(EnableGoogleFluentdLogging)' == 'true' ">
     <PackageReference Include="NCoreUtils.AspNetCore.Logging" Version="10.0.0-rc00" />
